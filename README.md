@@ -1,4 +1,4 @@
-### Compressor
+### Image Compressor
 
 #### Install NodeJs LTS on Ubuntu 20.04
 
