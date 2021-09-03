@@ -75,3 +75,33 @@ http {
 	include /etc/nginx/sites-enabled/*;
 }
 ```
+
+#### Creating Website Directory with Necessary Permission
+
+```
+sudo mkdir -p /var/www/example.com/api
+sudo chown -R www-data:www-data /var/www/example.com/api
+sudo chmod -R 755 /var/www/example.com/api
+```
+
+Creating Virtual Host
+```
+sudo nano /etc/nginx/sites-available/example.com
+server {
+    listen 80;
+    server_name localhost;
+
+    location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    proxy_read_timeout 600s;
+    }
+
+}
+sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+sudo unlink /etc/nginx/sites-enabled/default
+```
