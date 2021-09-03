@@ -79,9 +79,9 @@ http {
 #### Creating API Directory with Necessary Permission
 
 ```
-sudo mkdir -p /var/www/sixsilicon.com/api
-sudo chown -R www-data:www-data /var/www/sixsilicon.com/api
-sudo chmod -R 755 /var/www/sixsilicon.com/api
+sudo mkdir -p /var/www/sixsilicon.com
+sudo chown -R www-data:www-data /var/www/sixsilicon.com
+sudo chmod -R 755 /var/www/sixsilicon.com
 ```
 
 #### Creating Virtual Host
