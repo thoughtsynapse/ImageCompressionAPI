@@ -1,6 +1,6 @@
 ### Image Compressor
 
-#### Install Nginx, NodeJs LTS (Currently v14.17.6), PM2 on Ubuntu 20.04
+#### Install Nginx and NodeJs LTS (Currently v14.17.6) on Ubuntu 20.04
 
 ```
 sudo apt update
@@ -10,10 +10,6 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 cat /etc/apt/sources.list.d/nodesource.list
 sudo apt  install nodejs
 node  -v
-
-npm install pm2 -g
-pm2 startup
-npm install formidable
 ```
 
 #### Install PNGQuant, JPEGOptim, OptiPNG, Gifsicle, Scour
@@ -132,6 +128,13 @@ npm init -y
 ```
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
+```
+
+#### Install Formidable and PM2
+```
+npm install pm2 -g
+pm2 startup
+npm install formidable
 ```
 
 #### Run Api Server
