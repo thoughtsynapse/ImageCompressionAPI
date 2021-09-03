@@ -11,6 +11,7 @@ http.createServer(function (req, res) {
     form.parse(req, function (err, fields, files) {
       var oldpath = files.imageComp.path;
       var newpath = '/var/www/sixsilicon.com/uploads/' + files.imageComp.name;
+      var outPath = '/var/www/sixsilicon.com/uploads/_' + files.imageComp.name;
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         if (files.imageComp.name.split('.').pop() === 'JPG' || files.imageComp.name.split('.').pop() === 'JPEG' || files.imageComp.name.split('.').pop() === 'jpg' || files.imageComp.name.split('.').pop() === 'jpeg') {
@@ -65,7 +66,7 @@ http.createServer(function (req, res) {
           
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'scour', ['-i', newpath, '-o', newpath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none']);
+            const comImage = spawn( 'scour', ['-i', newpath, '-o', outPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none']);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
