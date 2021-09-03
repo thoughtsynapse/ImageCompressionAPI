@@ -20,7 +20,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
+            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '--overwrite', newpath]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
@@ -35,7 +35,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=60-90', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
+            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-80', newpath]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
@@ -50,7 +50,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
+            const comImage = spawn( 'gifsicle', ['-O3', newpath]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
@@ -58,14 +58,14 @@ http.createServer(function (req, res) {
             });
             
         }
-        else if (files.imageComp.name.split('.').pop() === 'WEBP' || files.imageComp.name.split('.').pop() === 'webp') {
+        else if (files.imageComp.name.split('.').pop() === 'SVG' || files.imageComp.name.split('.').pop() === 'svg') {
 
-            // File is WEBP
-            res.write('WEBP File');
-
+            // File is SVG
+            res.write('SVG File');
+          
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
+            const comImage = spawn( 'scour', ['-i', newpath, '-o', newpath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none']);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
