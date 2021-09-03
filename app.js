@@ -28,7 +28,7 @@ http.createServer(function (req, res) {
         else if (imgExt === 'png') {
             res.write('PNG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-80', newPath]);
+            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', newPath]);
 
         }
         
