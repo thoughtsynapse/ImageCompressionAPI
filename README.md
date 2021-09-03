@@ -12,6 +12,7 @@ sudo apt  install nodejs
 node  -v
 
 npm install express
+npm install formidable
 ```
 
 #### Install PNGQuant, JPEGOptim, OptiPNG, Gifsicle, Scour
@@ -112,4 +113,34 @@ sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d sixsilicon.com
 sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
+```
+
+#### Create app.js in /var/www/sixsilicon.com/
+```
+'use strict';
+var http = require('http');
+var formidable = require('formidable');
+var fs = require('fs');
+
+http.createServer(function (req, res) {
+  if (req.url == '/api') {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      var oldpath = files.imageComp.path;
+      var newpath = '/var/www/sixsilicon.com/' + files.imageComp.name;
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
+        res.write('File uploaded and moved!');
+        res.end();
+      });
+ });
+  } else {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write('<form action="api" method="post" enctype="multipart/form-data">');
+    res.write('<input type="file" name="imageComp"><br>');
+    res.write('<input type="submit">');
+    res.write('</form>');
+    return res.end();
+  }
+}).listen(3000);
 ```
