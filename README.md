@@ -105,3 +105,11 @@ server {
 sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
 sudo unlink /etc/nginx/sites-enabled/default
 ```
+
+#### Installing SSL
+```
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d sixsilicon.com
+sudo systemctl status certbot.timer
+sudo certbot renew --dry-run
+```
