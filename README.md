@@ -77,7 +77,8 @@ http {
 
 ```
 sudo mkdir -p /var/www/sixsilicon.com/api
-sudo mkdir -p /var/www/sixsilicon.com/uploads
+sudo mkdir -p /var/www/sixsilicon.com/input
+sudo mkdir -p /var/www/sixsilicon.com/output
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
 ```
