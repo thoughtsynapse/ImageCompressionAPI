@@ -22,13 +22,13 @@ http.createServer(function (req, res) {
         if (imgExt === 'jpg' || imgExt === 'jpeg') {
             res.write('JPG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '--overwrite', newPath]);
+            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', newPath, '--dest=' + outPath]);
         }
         
         else if (imgExt === 'png') {
             res.write('PNG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', newPath]);
+            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', newPath, '--output', outPath]);
 
         }
         
@@ -41,7 +41,7 @@ http.createServer(function (req, res) {
         else if (imgExt === 'svg') {
             res.write('SVG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'scour', ['-i', newPath, '-o', outPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none']);
+            const comImage = spawn( 'scour', ['-i', newPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outPath]);
         }
         
         else {
