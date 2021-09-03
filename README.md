@@ -1,13 +1,17 @@
 ### Image Compressor
 
-#### Install NodeJs LTS on Ubuntu 20.04
+#### Install Nginx, NodeJs LTS, Express on Ubuntu 20.04
 
 ```
 sudo apt update
+sudo apt install nginx
+
 curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 cat /etc/apt/sources.list.d/nodesource.list
-sudo apt -y install nodejs
-node  -v (Current v14.17.6)
+sudo apt  install nodejs
+node  -v (Currently v14.17.6)
+
+npm install express
 ```
 
 #### Install PNGQuant, JPEGOptim, OptiPNG, Gifsicle, Scour
