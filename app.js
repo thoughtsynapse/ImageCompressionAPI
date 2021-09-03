@@ -20,7 +20,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m90', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
+            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
