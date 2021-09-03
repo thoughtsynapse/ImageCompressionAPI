@@ -31,7 +31,7 @@ http.createServer(function (req, res) {
         else  if (files.imageComp.name.split('.').pop() === 'GIF' || files.imageComp.name.split('.').pop() === 'gif') {
             res.write('GIF File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'gifsicle', ['-O3', newpath]);
+            const comImage = spawn( 'gifsicle', ['-O3', newpath, '-o', outPath]);
         }
         
         else if (files.imageComp.name.split('.').pop() === 'SVG' || files.imageComp.name.split('.').pop() === 'svg') {
