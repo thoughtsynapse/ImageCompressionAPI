@@ -9,11 +9,14 @@ http.createServer(function (req, res) {
   if (req.url == '/api') {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
+      
       var oldPath = files.imageComp.path;
       var imgExt = files.imageComp.name.split('.').pop().toLowerCase();
       var newPath = '/var/www/sixsilicon.com/uploads/' + files.imageComp.name;
       var outPath = '/var/www/sixsilicon.com/uploads/_' + files.imageComp.name;
+      
       fs.rename(oldPath, newPath, function (err) {
+        
         if (err) throw err;
         
         if (imgExt === 'jpg' || imgExt === 'jpeg') {
