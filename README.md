@@ -102,6 +102,6 @@ server {
     }
 
 }
-sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
 sudo unlink /etc/nginx/sites-enabled/default
 ```
