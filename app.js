@@ -12,8 +12,8 @@ http.createServer(function (req, res) {
       
       var oldPath = files.imageComp.path;
       var imgExt = files.imageComp.name.split('.').pop().toLowerCase();
-      var newPath = '/var/www/sixsilicon.com/uploads/' + files.imageComp.name;
-      var outPath = '/var/www/sixsilicon.com/uploads/_' + files.imageComp.name;
+      var newPath = '/var/www/sixsilicon.com/input/' + files.imageComp.name;
+      var outPath = '/var/www/sixsilicon.com/output/' + files.imageComp.name;
       
       fs.rename(oldPath, newPath, function (err) {
         
