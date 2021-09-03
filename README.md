@@ -76,20 +76,20 @@ http {
 }
 ```
 
-#### Creating Website Directory with Necessary Permission
+#### Creating API Directory with Necessary Permission
 
 ```
-sudo mkdir -p /var/www/example.com/api
-sudo chown -R www-data:www-data /var/www/example.com/api
-sudo chmod -R 755 /var/www/example.com/api
+sudo mkdir -p /var/www/sixsilicon.com/api
+sudo chown -R www-data:www-data /var/www/sixsilicon.com/api
+sudo chmod -R 755 /var/www/sixsilicon.com/api
 ```
 
 #### Creating Virtual Host
 ```
-sudo nano /etc/nginx/sites-available/example.com
+sudo nano /etc/nginx/sites-available/sixsilicon.com
 server {
     listen 80;
-    server_name localhost;
+    server_name sixsilicon.com;
 
     location / {
     proxy_pass http://localhost:3000;
