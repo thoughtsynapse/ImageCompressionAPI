@@ -94,8 +94,18 @@ server {
     server_name sixsilicon.com;
     
     location / {
-    proxy_pass http://localhost:3000;
-    proxy_read_timeout 60s;
+            root /var/www/sixsilicon.com;
+	    index index.html;
+    }
+    
+    location /api {
+            proxy_pass http://localhost:3000/api;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_read_timeout 60s;
     }
 }
 sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
@@ -104,7 +114,7 @@ sudo unlink /etc/nginx/sites-enabled/default
 
 #### Installing SSL
 ```
-sudo apt install certbot python3-certbot-nginx
+sudo apt install certbot python3-certbot-nginx -y
 sudo certbot --nginx -d sixsilicon.com
 sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
@@ -128,5 +138,5 @@ sudo chmod -R 755 /var/www/sixsilicon.com
 ```
 sudo systemctl restart nginx
 cd /var/www/sixsilicon
-node app.js
+pm2 start app.js
 ```
