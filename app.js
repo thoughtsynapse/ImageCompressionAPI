@@ -1,58 +1,36 @@
 'use strict';
-let http = require('http');
-let formidable = require('formidable');
-let fs = require('fs');
+var http = require('http');
+var formidable = require('formidable');
+var fs = require('fs');
 
 
-// Send a POST request through Postman with input type 'File' and key 'imageComp'
+// Send a POST request through Postman with input type 'File' and key 'imgComp '
 http.createServer(function (req, res) {
   if (req.url == '/api') {
-    let form = new formidable.IncomingForm();
+    var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
 
-      let oldPath = files.imageComp.path;
-      let imgExt = files.imageComp.name.split('.').pop().toLowerCase();
+      res.setHeader('Content-Type', 'application/json');
+      var tempPath = files.imgComp .path;
+      var imgName = files.imgComp .name;
+      var inPath = '/var/www/sixsilicon.com/input/' + imgName;
+      var outPath = '/var/www/sixsilicon.com/output/' + imgName;
+      var imgExt = imgName.split('.').pop().toLowerCase();
+      var imgURL = 'http://sixsilicon.com/output/' + imgName;
 
-      let inPath  = '/var/www/sixsilicon.com/input/' + files.imageComp.name;
-      let inSize = getFilesize(inPath);
-      let inSizeRounded = Math.round(inSize) + ' KB';
-
-      let outPath = '/var/www/sixsilicon.com/output/' + files.imageComp.name;
-
-      fs.rename(oldPath, inPath , function (err) {
+      fs.rename(tempPath, inPath, function (err) {
 
         if (err) throw err;
-        res.setHeader('Content-Type', 'application/json');
+        else if (imgExt === 'jpg' || imgExt === 'jpeg') { compressJPG(inPath, outPath); }
+        else if (imgExt === 'png') { compressPNG(inPath, outPath); }
+        else if (imgExt === 'gif') { compressGIF(inPath, outPath); }
+        else if (imgExt === 'svg') { compressSVG(inPath, outPath); }
 
-        if (imgExt === 'jpg' || imgExt === 'jpeg') {
-          res.write('JPG File');
-          const { spawn } = require('child_process');
-          const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inPath , '--dest=' + outPath]);
-        }
-
-        else if (imgExt === 'png') {
-          res.write('PNG File');
-          const { spawn } = require('child_process');
-          const comImage = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inPath , '--output', outPath]);
-        }
-
-        else if (imgExt === 'gif') {
-          res.write('GIF File');
-          const { spawn } = require('child_process');
-          const comImage = spawn('gifsicle', ['-O3', '--lossy=85', inPath , '-o', outPath]);
-        }
-
-        else if (imgExt === 'svg') {
-          res.write('SVG File');
-          const { spawn } = require('child_process');
-          const comImage = spawn('scour', ['-i', inPath , '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outPath]);
-        }
-
-        let outSize = '1.333333'; //getFilesize(inPath);
-        let outSizeRounded = Math.round(outSize) + ' KB';
-
-        res.end(JSON.stringify({ imgType: imgExt.toUpperCase(), sizeBefore: inSizeRounded, sizeAfter: outSizeRounded, imgURL: outPath }));
-
+        var inSize = getFilesize(inPath);
+        var inSizeRounded = Math.round(inSize) + ' KB';
+        var outSize = getFilesize(outPath);
+        var outSizeRounded = Math.round(outSize) + ' KB';
+        res.end(JSON.stringify({ imgType: imgExt.toUpperCase(), sizeBefore: inSizeRounded, sizeAfter: outSizeRounded, imgURL: imgURL }));
 
       });
     });
@@ -61,9 +39,28 @@ http.createServer(function (req, res) {
   console.log(`Server running at http://localhost:3000/`);
 });
 
+function compressJPG(inputPath, outputPath) {
+  const { spawn } = require('child_process');
+  const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputPath, '--dest=' + outputPath]);
+}
 
-function getFilesize(filename) {
-  let stats = fs.statSync(filename);
-  let sizeInKB = stats.size / 1024;
+function compressPNG(inputPath, outputPath) {
+  const { spawn } = require('child_process');
+  const comImage = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inputPath, '--output', outputPath]);
+}
+
+function compressGIF(inputPath, outputPath) {
+  const { spawn } = require('child_process');
+  const comImage = spawn('gifsicle', ['-O3', '--lossy=85', inputPath, '-o', outputPath]);
+}
+
+function compressSVG(inputPath, outputPath) {
+  const { spawn } = require('child_process');
+  const comImage = spawn('scour', ['-i', inputPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outputPath]);
+}
+
+function getFilesize(inputPath) {
+  var stats = fs.statSync(inputPath);
+  var sizeInKB = stats.size / 1024;
   return sizeInKB;
 }
