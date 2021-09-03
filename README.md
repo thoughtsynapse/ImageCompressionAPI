@@ -4,25 +4,26 @@
 
 ```
 sudo apt update
-sudo apt install nginx
+sudo apt install nginx -y
 
 curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 cat /etc/apt/sources.list.d/nodesource.list
 sudo apt  install nodejs
 node  -v
 
-npm install pm2
+npm install pm2 -g
+pm2 startup
 npm install formidable
 ```
 
 #### Install PNGQuant, JPEGOptim, OptiPNG, Gifsicle, Scour
 
 ```
-sudo apt install PNGQuant
-sudo apt install JPEGOptim
-sudo apt install OptiPNG
-sudo apt install Gifsicle
-sudo apt install Scour
+sudo apt install pngquant -y
+sudo apt install jpegoptim
+sudo apt install optipng
+sudo apt install gifsicle
+sudo apt install scour -y
 ```
 
 #### Updating Nginx conf in etc/nginx/nginx.conf
