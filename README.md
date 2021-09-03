@@ -78,7 +78,6 @@ http {
 
 ```
 sudo mkdir -p /var/www/sixsilicon.com/api
-sudo mkdir -p /var/www/sixsilicon.com/html
 sudo mkdir -p /var/www/sixsilicon.com/uploads
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
@@ -120,7 +119,7 @@ nano app.js
 npm init -y
 ```
 
-#### Giving Necessary Permission
+#### Giving Necessary Permission Again
 
 ```
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
@@ -137,6 +136,6 @@ npm install formidable
 #### Run Api Server
 ```
 sudo systemctl restart nginx
-cd /var/www/sixsilicon
+cd /var/www/sixsilicon/api
 pm2 start app.js
 ```
