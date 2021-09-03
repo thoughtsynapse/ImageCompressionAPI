@@ -144,3 +144,10 @@ http.createServer(function (req, res) {
   }
 }).listen(3000);
 ```
+
+#### Run Api Server
+```
+sudo systemctl restart nginx
+cd /var/www/sixsilicon
+node app.js
+```
