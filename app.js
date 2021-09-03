@@ -52,3 +52,10 @@ http.createServer(function (req, res) {
  });
   }
 }).listen(3000);
+
+function getFilesizeInBytes(filename) {
+    var stats = fs.statSync("myfile.txt")
+    var fileSizeInBytes = stats.size;
+    var fileSizeInMegabytes = fileSizeInBytes / (1024*1024);
+    return fileSizeInBytes;
+}
