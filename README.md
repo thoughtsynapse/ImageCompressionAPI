@@ -12,7 +12,7 @@ sudo apt  install nodejs -y
 node  -v
 ```
 
-#### Install PNGQuant, JPEGOptim, OptiPNG, Gifsicle, Scour
+#### Install PNGQuant, JPEGOptim, Gifsicle, Scour
 
 ```
 sudo apt install pngquant -y
