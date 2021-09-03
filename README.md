@@ -84,7 +84,7 @@ sudo chown -R www-data:www-data /var/www/example.com/api
 sudo chmod -R 755 /var/www/example.com/api
 ```
 
-Creating Virtual Host
+#### Creating Virtual Host
 ```
 sudo nano /etc/nginx/sites-available/example.com
 server {
