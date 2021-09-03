@@ -77,7 +77,8 @@ http {
 #### Creating API Directory with Necessary Permission
 
 ```
-sudo mkdir -p /var/www/sixsilicon.com
+sudo mkdir -p /var/www/sixsilicon.com/api
+sudo mkdir -p /var/www/sixsilicon.com/html
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
 ```
@@ -90,18 +91,21 @@ server {
     server_name sixsilicon.com;
     
     location / {
-            root /var/www/sixsilicon.com;
+            root /var/www/sixsilicon.com/html;
 	    index index.html;
     }
     
     location /api {
-            proxy_pass http://localhost:3000/api;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;
-            proxy_read_timeout 60s;
+	    root /var/www/sixsilicon.com/api;
+	    index index.html;
+	    
+	    #proxy_pass http://localhost:3000/api;
+            #proxy_http_version 1.1;
+            #proxy_set_header Upgrade $http_upgrade;
+            #proxy_set_header Connection 'upgrade';
+            #proxy_set_header Host $host;
+            #proxy_cache_bypass $http_upgrade;
+            #proxy_read_timeout 60s;
     }
 }
 sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
