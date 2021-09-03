@@ -105,8 +105,8 @@ server {
     }
     
     # Image Folder
-    location ~ \.(gif|jpg|png|svg|jpeg)$ {
-        root /var/www/sixsilicon.com/output;
+    location ~ ^/output {
+        try_files $uri $uri/ =404;
     }
 }
 sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
