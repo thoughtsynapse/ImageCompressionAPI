@@ -10,7 +10,7 @@ http.createServer(function (req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       var oldpath = files.imageComp.path;
-      var newpath = '/var/www/sixsilicon.com/' + files.imageComp.name;
+      var newpath = '/var/www/sixsilicon.com/uploads/' + files.imageComp.name;
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         if (files.imageComp.name.split('.').pop() === 'JPG' || files.imageComp.name.split('.').pop() === 'JPEG' || files.imageComp.name.split('.').pop() === 'jpg' || files.imageComp.name.split('.').pop() === 'jpeg') {
@@ -20,7 +20,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m90', '--strip-all', '/var/www/sixsilicon.com/' + files.imageComp.name]);
+            const comImage = spawn( 'jpegoptim', ['-m90', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
@@ -35,7 +35,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=60-90', '/var/www/sixsilicon.com/' + files.imageComp.name]);
+            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=60-90', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
@@ -50,7 +50,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/' + files.imageComp.name]);
+            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
@@ -65,7 +65,7 @@ http.createServer(function (req, res) {
 
             // Compressing it
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/' + files.imageComp.name]);
+            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '/var/www/sixsilicon.com/uploads/' + files.imageComp.name]);
 
             // Echoing log
             comImage.stdout.on( 'data', ( data ) => {
