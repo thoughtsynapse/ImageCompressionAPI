@@ -79,6 +79,7 @@ http {
 ```
 sudo mkdir -p /var/www/sixsilicon.com/api
 sudo mkdir -p /var/www/sixsilicon.com/html
+sudo mkdir -p /var/www/sixsilicon.com/uploads
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
 ```
@@ -122,7 +123,7 @@ sudo certbot renew --dry-run
 
 #### Create app.js in /var/www/sixsilicon.com/
 ```
-cd /var/www/sixsilicon.com
+cd /var/www/sixsilicon.com/api
 nano app.js
 npm init -y
 ```
