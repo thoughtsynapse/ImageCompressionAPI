@@ -24,7 +24,7 @@ sudo apt install Gifsicle
 sudo apt install Scour
 ```
 
-### Updating Nginx conf in etc/nginx/nginx.conf
+#### Updating Nginx conf in etc/nginx/nginx.conf
 ```
 user www-data;
 worker_processes auto;
