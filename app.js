@@ -9,35 +9,36 @@ http.createServer(function (req, res) {
   if (req.url == '/api') {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
-      var oldpath = files.imageComp.path;
-      var newpath = '/var/www/sixsilicon.com/uploads/' + files.imageComp.name;
+      var oldPath = files.imageComp.path;
+      var imgExt = files.imageComp.name.split('.').pop().toLowerCase();
+      var newPath = '/var/www/sixsilicon.com/uploads/' + files.imageComp.name;
       var outPath = '/var/www/sixsilicon.com/uploads/_' + files.imageComp.name;
-      fs.rename(oldpath, newpath, function (err) {
+      fs.rename(oldPath, newPath, function (err) {
         if (err) throw err;
         
-        if (files.imageComp.name.split('.').pop() === 'JPG' || files.imageComp.name.split('.').pop() === 'JPEG' || files.imageComp.name.split('.').pop() === 'jpg' || files.imageComp.name.split('.').pop() === 'jpeg') {
+        if (imgExt === 'jpg' || imgExt === 'jpeg') {
             res.write('JPG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '--overwrite', newpath]);
+            const comImage = spawn( 'jpegoptim', ['-m85', '--strip-all', '--overwrite', newPath]);
         }
         
-        else  if (files.imageComp.name.split('.').pop() === 'PNG' || files.imageComp.name.split('.').pop() === 'png') {
+        else if (imgExt === 'png') {
             res.write('PNG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-80', newpath]);
+            const comImage = spawn( 'pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-80', newPath]);
 
         }
         
-        else  if (files.imageComp.name.split('.').pop() === 'GIF' || files.imageComp.name.split('.').pop() === 'gif') {
+        else if (imgExt === 'gif') {
             res.write('GIF File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'gifsicle', ['-O3', newpath, '-o', outPath]);
+            const comImage = spawn( 'gifsicle', ['-O3', newPath, '-o', outPath]);
         }
         
-        else if (files.imageComp.name.split('.').pop() === 'SVG' || files.imageComp.name.split('.').pop() === 'svg') {
+        else if (imgExt === 'svg') {
             res.write('SVG File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'scour', ['-i', newpath, '-o', outPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none']);
+            const comImage = spawn( 'scour', ['-i', newPath, '-o', outPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none']);
         }
         
         else {
