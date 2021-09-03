@@ -1,6 +1,6 @@
 ### Image Compressor
 
-#### Install Nginx, NodeJs LTS (Currently v14.17.6), Express on Ubuntu 20.04
+#### Install Nginx, NodeJs LTS (Currently v14.17.6), PM2 on Ubuntu 20.04
 
 ```
 sudo apt update
@@ -11,7 +11,7 @@ cat /etc/apt/sources.list.d/nodesource.list
 sudo apt  install nodejs
 node  -v
 
-npm install express
+npm install pm2
 npm install formidable
 ```
 
