@@ -117,7 +117,9 @@ sudo certbot renew --dry-run
 
 #### Create app.js in /var/www/sixsilicon.com/
 ```
-Content in App.js file
+cd /var/www/sixsilicon.com
+nano app.js
+npm init -y
 ```
 
 #### Run Api Server
