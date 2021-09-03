@@ -35,7 +35,7 @@ http.createServer(function (req, res) {
         else if (imgExt === 'gif') {
             res.write('GIF File');
             const { spawn } = require( 'child_process' );
-            const comImage = spawn( 'gifsicle', ['-O3', newPath, '-o', outPath]);
+            const comImage = spawn( 'gifsicle', ['-O3', '--lossy=85', newPath, '-o', outPath]);
         }
         
         else if (imgExt === 'svg') {
