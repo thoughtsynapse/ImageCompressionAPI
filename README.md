@@ -116,6 +116,13 @@ nano app.js
 npm init -y
 ```
 
+#### Giving Necessary Permission
+
+```
+sudo chown -R www-data:www-data /var/www/sixsilicon.com
+sudo chmod -R 755 /var/www/sixsilicon.com
+```
+
 #### Run Api Server
 ```
 sudo systemctl restart nginx
