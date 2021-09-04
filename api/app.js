@@ -44,7 +44,7 @@ http.createServer(function (req, res) {
 function compressJPG(inputPath, outputPath, response, imageExt, imageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputPath, '--dest=' + outputPath]);
-  comImage.stdout.on('data', (data) => {
+  comImage.stdout.on('end', (data) => {
     var inputSizeRounded = Math.round(getFilesize(inputPath)) + ' KB';
     var outputSizeRounded = Math.round(getFilesize(outputPath)) + ' KB';
     response.end(JSON.stringify({ imgType: imageExt.toUpperCase(), sizeBefore: inputSizeRounded, sizeAfter: outputSizeRounded, imgURL: imageURL }));
@@ -54,7 +54,7 @@ function compressJPG(inputPath, outputPath, response, imageExt, imageURL) {
 function compressPNG(inputPath, outputPath, response, imageExt, imageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inputPath, '--output', outputPath]);
-  comImage.stdout.on('data', (data) => {
+  comImage.stdout.on('end', (data) => {
     var inputSizeRounded = Math.round(getFilesize(inputPath)) + ' KB';
     var outputSizeRounded = Math.round(getFilesize(outputPath)) + ' KB';
     response.end(JSON.stringify({ imgType: imageExt.toUpperCase(), sizeBefore: inputSizeRounded, sizeAfter: outputSizeRounded, imgURL: imageURL }));
@@ -64,7 +64,7 @@ function compressPNG(inputPath, outputPath, response, imageExt, imageURL) {
 function compressGIF(inputPath, outputPath, response, imageExt, imageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('gifsicle', ['-O3', '--lossy=85', inputPath, '-o', outputPath]);
-  comImage.stdout.on('data', (data) => {
+  comImage.stdout.on('end', (data) => {
     var inputSizeRounded = Math.round(getFilesize(inputPath)) + ' KB';
     var outputSizeRounded = Math.round(getFilesize(outputPath)) + ' KB';
     response.end(JSON.stringify({ imgType: imageExt.toUpperCase(), sizeBefore: inputSizeRounded, sizeAfter: outputSizeRounded, imgURL: imageURL }));
@@ -74,7 +74,7 @@ function compressGIF(inputPath, outputPath, response, imageExt, imageURL) {
 function compressSVG(inputPath, outputPath, response, imageExt, imageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('scour', ['-i', inputPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outputPath]);
-  comImage.stdout.on('data', (data) => {
+  comImage.stdout.on('end', (data) => {
     var inputSizeRounded = Math.round(getFilesize(inputPath)) + ' KB';
     var outputSizeRounded = Math.round(getFilesize(outputPath)) + ' KB';
     response.end(JSON.stringify({ imgType: imageExt.toUpperCase(), sizeBefore: inputSizeRounded, sizeAfter: outputSizeRounded, imgURL: imageURL }));
