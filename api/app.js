@@ -2,11 +2,11 @@
 'use strict';
 
 // Module dependencies
-let http = require('http');
-let formidable = require('formidable');
-let fs = require('fs');
-let uuid = require('uuid');
-let findRemoveSync = require('find-remove');
+const http = require('http');
+const formidable = require('formidable');
+const fs = require('fs');
+const uuid = require('uuid');
+const findRemoveSync = require('find-remove');
 
 // Variables
 const inputFolder = '/var/www/sixsilicon.com/api/input/';
@@ -28,7 +28,7 @@ http.createServer((req, res) => {
 
       // Creating Unique Input/Output sub-folders
       let uniqueUUID = uuid.v1();
-      fs.mkdir(outputFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
+      fs.mkdir(inputFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
       fs.mkdir(outputFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
 
       // Uploaded Image Name with Temporary Location
@@ -105,7 +105,7 @@ function sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, out
   let sizeBefore = Math.round(getFilesize(inputImage)) + ' KB';
   let sizeAfter = Math.round(getFilesize(outputImage)) + ' KB';
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ imageType: imageExt, sizeBefore: sizeBefore, sizeAfter: sizeAfter, inputImageURL: inputImageURL, inputImageURL: inputImageURL }));
+  res.end(JSON.stringify({ imageType: imageExt, sizeBefore: sizeBefore, sizeAfter: sizeAfter, inputImageURL: inputImageURL, outputImageURL: outputImageURL }));
 }
 
 // Get Filesize
