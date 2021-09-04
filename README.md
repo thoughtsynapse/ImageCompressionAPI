@@ -77,8 +77,8 @@ http {
 
 ```
 sudo mkdir -p /var/www/sixsilicon.com/api
-sudo mkdir -p /var/www/sixsilicon.com/input
-sudo mkdir -p /var/www/sixsilicon.com/output
+sudo mkdir -p /var/www/sixsilicon.com/api/input
+sudo mkdir -p /var/www/sixsilicon.com/api/output
 sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
 ```
@@ -104,8 +104,13 @@ server {
 	    proxy_read_timeout 60s;
     }
     
-    # Image Folder
-    location ~ ^/output {
+    # Input Folder
+    location ~ ^/api/input {
+        try_files $uri $uri/ =404;
+    }
+
+	# Output Folder
+    location ~ ^/api/output {
         try_files $uri $uri/ =404;
     }
 }
@@ -135,17 +140,18 @@ sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
 ```
 
-#### Install Formidable, UUID and PM2
+#### Install Formidable, UUID, find-remove and PM2
 ```
-npm install pm2 -g
-pm2 startup
 npm install formidable
 npm install uuid
+npm install -S find-remove
+npm install pm2 -g
+pm2 startup
 ```
 
 #### Run Api Server
 ```
 sudo systemctl restart nginx
 cd /var/www/sixsilicon/api
-pm2 start app.js
+pm2 start app.js -i max
 ```
