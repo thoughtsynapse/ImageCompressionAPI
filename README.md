@@ -135,11 +135,12 @@ sudo chown -R www-data:www-data /var/www/sixsilicon.com
 sudo chmod -R 755 /var/www/sixsilicon.com
 ```
 
-#### Install Formidable and PM2
+#### Install Formidable, UUID and PM2
 ```
 npm install pm2 -g
 pm2 startup
 npm install formidable
+npm install uuid
 ```
 
 #### Run Api Server
