@@ -89,9 +89,8 @@ sudo nano /etc/nginx/sites-available/sixsilicon.com
 server {
     listen 80;
     server_name sixsilicon.com;
-    
-    # Root Web App Folder
-    root /var/www/sixsilicon.com;
+    root /var/www/sixsilicon.com/api;
+   
     
     # API Folder
     location ~ ^/api {
@@ -105,12 +104,12 @@ server {
     }
     
     # Input Folder
-    location ~ ^/api/input {
+    location ~ ^/input {
         try_files $uri $uri/ =404;
     }
 
 	# Output Folder
-    location ~ ^/api/output {
+    location ~ ^/output {
         try_files $uri $uri/ =404;
     }
 }

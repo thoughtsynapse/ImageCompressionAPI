@@ -11,8 +11,8 @@ const findRemoveSync = require('find-remove');
 // Variables
 const inputFolder = '/var/www/sixsilicon.com/api/input/';
 const outputFolder = '/var/www/sixsilicon.com/api/output/';
-const baseInputURL = 'https://sixsilicon.com/api/input/';
-const baseOutputURL = 'https://sixsilicon.com/api/output/';
+const baseInputURL = 'https://sixsilicon.com/input/';
+const baseOutputURL = 'https://sixsilicon.com/output/';
 
 // Deleting files older than one hour from input and output folder
 setInterval(() => {
@@ -20,7 +20,7 @@ setInterval(() => {
   findRemoveSync(outputFolder, { age: { seconds: 3600 }, dir: '*', ignore: 'index.html' });
 }, 3600000);
 
-// Creating Server, Send a POST request through Postman with an image and key 'image '
+// Creating Server, Send a POST request to https://sixsilicon.com/api through Postman with an image file and key 'image'
 http.createServer((req, res) => {
   if (req.url == '/api') {
     let form = new formidable.IncomingForm();
@@ -40,9 +40,10 @@ http.createServer((req, res) => {
       // Input/Output Image Name with Permanent Location
       let inputImage = inputFolder + uniqueUUID + '/' + imageName;
       let outputImage = outputFolder + uniqueUUID + '/' + imageName;
+      let outputPath = outputFolder + uniqueUUID;
 
       // Getting Input Image Extension
-      let imageExt = imageName.split('.').pop().toLowerCase();
+      let imageExt = imageName.split('.').pop().toUpperCase();
 
       // Input/Output Image Public HTTP URL
       let inputImageURL = baseInputURL + uniqueUUID + '/' + imageName;
@@ -51,10 +52,10 @@ http.createServer((req, res) => {
       // Moving file from temporary to input folder, on success one of the compression function will be called!
       fs.rename(tempImage, inputImage, (err) => {
         if (err) throw err;
-        else if (imageExt === 'jpg' || imageExt === 'jpeg') { compressJPG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'png') { compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'gif') { compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'svg') { compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imageExt === 'JPG' || imageExt === 'JPEG') { compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imageExt === 'PNG') { compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imageExt === 'GIF') { compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imageExt === 'SVG') { compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
         else { res.end(); }
       });
     });
@@ -65,9 +66,9 @@ http.createServer((req, res) => {
 
 
 // Compresses JPEG images
-function compressJPG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
+function compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputImageURL, outputImageURL) {
   const { spawn } = require('child_process');
-  const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputImage, '--dest=' + outputImage]);
+  const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputImage, '--dest=' + outputPath]);
   comImage.stdout.on('end', () => {
     sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL);
   });
