@@ -124,7 +124,7 @@ sudo certbot renew --dry-run
 #### Create app.js in /var/www/sixsilicon.com/
 ```
 cd /var/www/sixsilicon.com/api
-nano app.js // https://github.com/twoabd/Compressor/blob/main/api/app.js
+nano app.js (https://raw.githubusercontent.com/twoabd/Compressor/main/api/app.js)
 npm init -y
 ```
 
