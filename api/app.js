@@ -22,13 +22,13 @@ http.createServer(function (req, res) {
 
         if (err) throw err;
         else if (imgExt === 'jpg' || imgExt === 'jpeg') { compressJPG(inPath, outPath); }
-        else if (imgExt === 'png') { compressPNG(inPath, outPath); }
+        else if (imgExt === 'png') { compressPNG(inPath, outPath); }  //...............................
         else if (imgExt === 'gif') { compressGIF(inPath, outPath); }
         else if (imgExt === 'svg') { compressSVG(inPath, outPath); }
 
         var inSize = getFilesize(inPath);
         var inSizeRounded = Math.round(inSize) + ' KB';
-        var outSize = getFilesize(outPath);
+        var outSize = getFilesize(outPath);  // ..................................
         var outSizeRounded = Math.round(outSize) + ' KB';
         res.end(JSON.stringify({ imgType: imgExt.toUpperCase(), sizeBefore: inSizeRounded, sizeAfter: outSizeRounded, imgURL: imgURL }));
 
@@ -42,21 +42,33 @@ http.createServer(function (req, res) {
 function compressJPG(inputPath, outputPath) {
   const { spawn } = require('child_process');
   const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputPath, '--dest=' + outputPath]);
+  comImage.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
 }
 
 function compressPNG(inputPath, outputPath) {
   const { spawn } = require('child_process');
   const comImage = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inputPath, '--output', outputPath]);
+  comImage.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
 }
 
 function compressGIF(inputPath, outputPath) {
   const { spawn } = require('child_process');
   const comImage = spawn('gifsicle', ['-O3', '--lossy=85', inputPath, '-o', outputPath]);
+  comImage.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
 }
 
 function compressSVG(inputPath, outputPath) {
   const { spawn } = require('child_process');
   const comImage = spawn('scour', ['-i', inputPath, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outputPath]);
+  comImage.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  })
 }
 
 function getFilesize(inputPath) {
