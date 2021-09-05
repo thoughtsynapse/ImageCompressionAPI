@@ -105,12 +105,12 @@ server {
     }
     
     # Input Folder
-    location ~ ^/input {
+    location ^~ "/input/([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})/.(jpg|jpeg|png|gif|svg)$" {
         try_files $uri $uri/ =404;
     }
 
 	# Output Folder
-    location ~ ^/output {
+    location ^~ "/output/([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})/.(jpg|jpeg|png|gif|svg)$" {
         try_files $uri $uri/ =404;
     }
 }
