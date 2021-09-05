@@ -15,8 +15,9 @@ node  -v
 #### Install PNGQuant, JPEGOptim, Gifsicle, Scour
 
 ```
-sudo apt install pngquant -y
 sudo apt install jpegoptim
+sudo apt install pngquant -y
+sudo apt install optipng
 sudo apt install gifsicle
 sudo apt install scour -y
 ```
