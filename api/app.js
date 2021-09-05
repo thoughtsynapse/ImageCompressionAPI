@@ -9,18 +9,18 @@ const uuid = require('uuid');
 const findRemoveSync = require('find-remove');
 
 // Variables
-const inputFolder = '/var/www/sixsilicon.com/api/input/';
-const outputFolder = '/var/www/sixsilicon.com/api/output/';
-const baseInputURL = 'https://sixsilicon.com/input/';
-const baseOutputURL = 'https://sixsilicon.com/output/';
+const inFolder = '/var/www/sixsilicon.com/api/input/';
+const outFolder = '/var/www/sixsilicon.com/api/output/';
+const baseInputURL = 'https://sixsilicon.com/in/';
+const baseOutputURL = 'https://sixsilicon.com/out/';
 
-// Deleting files older than one hour from input and output folder
+// Deleting images older than one hour from in and out folder
 setInterval(() => {
-  findRemoveSync(inputFolder, { age: { seconds: 3600 }, dir: '*', ignore: 'index.html' });
-  findRemoveSync(outputFolder, { age: { seconds: 3600 }, dir: '*', ignore: 'index.html' });
+  findRemoveSync(inFolder, { age: { seconds: 3600 }, dir: '*', ignore: 'index.html' });
+  findRemoveSync(outFolder, { age: { seconds: 3600 }, dir: '*', ignore: 'index.html' });
 }, 3600000);
 
-// Creating Server, Send a POST request to https://sixsilicon.com/api through Postman with an image file and key 'image'
+// Creating Server, Send a POST request to https://sixsilicon.com/api through Postman with an image file and key 'inImg'
 http.createServer((req, res) => {
   if (req.url == '/api') {
     let form = new formidable.IncomingForm();
@@ -28,34 +28,34 @@ http.createServer((req, res) => {
 
       // Creating Unique Input/Output sub-folders
       let uniqueUUID = uuid.v1();
-      fs.mkdir(inputFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
-      fs.mkdir(outputFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
+      fs.mkdir(inFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
+      fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
 
-      // Uploaded Image Name with Temporary Location
-      let tempImage = files.image.path;
-
-      // Just Image Name
-      let imageName = files.image.name;
+      // Getting form data
+      let tempImg = files.inImg.path;
+      let imgName = files.inImg.name;
+      let stripMeta = fields.stripMeta;
+      let isLossy = fields.isLossy;
 
       // Input/Output Image Name with Permanent Location
-      let inputImage = inputFolder + uniqueUUID + '/' + imageName;
-      let outputImage = outputFolder + uniqueUUID + '/' + imageName;
-      let outputPath = outputFolder + uniqueUUID;
+      let inImgPath = inFolder + uniqueUUID + '/' + imgName;
+      let outImgPath = outFolder + uniqueUUID + '/' + imgName;
+      let outImgDir = outFolder + uniqueUUID; // Output image folder path for JPEGOptim as it doesn't accept full image path.
 
       // Getting Input Image Extension
-      let imageExt = imageName.split('.').pop().toUpperCase();
+      let imgExt = imgName.split('.').pop().toUpperCase();
 
       // Input/Output Image Public HTTP URL
-      let inputImageURL = baseInputURL + uniqueUUID + '/' + imageName;
-      let outputImageURL = baseOutputURL + uniqueUUID + '/' + imageName;
+      let inImgURL = baseInputURL + uniqueUUID + '/' + imgName;
+      let outImgURL = baseOutputURL + uniqueUUID + '/' + imgName;
 
       // Moving file from temporary to input folder, on success one of the compression function will be called!
-      fs.rename(tempImage, inputImage, (err) => {
+      fs.rename(tempImg, inImgPath, (err) => {
         if (err) throw err;
-        else if (imageExt === 'JPG' || imageExt === 'JPEG') { compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'PNG') { compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'GIF') { compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'SVG') { compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imgExt === 'JPG' || imgExt === 'JPEG') { compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, res, imgExt, inImgURL, outImgURL); }
+        else if (imgExt === 'PNG') { compressPNG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+        else if (imgExt === 'GIF') { compressGIF(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+        else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
         else { res.end(); }
       });
     });
@@ -66,53 +66,116 @@ http.createServer((req, res) => {
 
 
 // Compresses JPEG image with JPEGOptim
-function compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputImageURL, outputImageURL) {
+function compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, response, imgExt, inImgURL, outImgURL) {
+
   const { spawn } = require('child_process');
-  const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputImage, '--dest=' + outputPath]);
-  comImage.stdout.on('end', () => {
-    sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL);
+  const JPEGLossless = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]);
+  const JPEGsLossless = spawn('jpegoptim', ['--strip-all', inImgPath, '--dest=' + outImgDir]);
+  const JPEGLossy = spawn('jpegoptim', ['-m85', inImgPath, '--dest=' + outImgDir]);
+  const JPEGsLossy = spawn('jpegoptim', ['-m85', '--strip-all', inImgPath, '--dest=' + outImgDir]);
+
+  let comPromiseOne = new Promise(function (successCallback, failureCallback) {
+    if (isLossy === 'false' && stripMeta === 'false') { const comImg = JPEGLossless; successCallback(comImg); }
+    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = JPEGsLossless; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = JPEGLossy; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = JPEGsLossy; successCallback(comImg); }
+    else { failureCallback('Wrong Form Data'); }
   });
+  comPromiseOne.then(
+    function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
+    function (error) { console.log(error); response.end(); }
+  );
 }
 
-// Compresses PNG image with PNGQuant
-function compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
+// Compresses PNG image with PNGQuant and OptiPNG
+function compressPNG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
+
   const { spawn } = require('child_process');
-  const comImage = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inputImage, '--output', outputImage]);
-  comImage.stdout.on('end', () => {
-    sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL);
+  const PNGLossless = spawn('optipng', ['-o2', inImgPath, '-out', outImgPath]);
+  const PNGsLossless = spawn('optipng', ['-o2', inImgPath, '-strip all', '-out', outImgPath]);
+  const PNGLossy = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=65-85', inImgPath, '--out', outImgPath]);
+  const PNGsLossy = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inImgPath, '--out', outImgPath]);
+
+  let comPromiseTwo = new Promise(function (successCallback, failureCallback) {
+    if (isLossy === 'false' && stripMeta === 'false') { const comImg = PNGLossless; successCallback(comImg); }
+    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = PNGsLossless; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = PNGLossy; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = PNGsLossy; successCallback(comImg); }
+    else { failureCallback('Wrong Form Data'); }
   });
+  comPromiseTwo.then(
+    function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
+    function (error) { console.log(error); response.end(); }
+  );
 }
 
 // Compresses GIF image with GIFSicle
-function compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
+function compressGIF(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
+
   const { spawn } = require('child_process');
-  const comImage = spawn('gifsicle', ['-O3', '--lossy=85', inputImage, '-o', outputImage]);
-  comImage.stdout.on('end', () => {
-    sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL);
+  const GIFLossless = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
+  const GIFsLossless = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
+  const GIFLossy = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
+  const GIFsLossy = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
+
+  let comPromiseThree = new Promise(function (successCallback, failureCallback) {
+    if (isLossy === 'false' && stripMeta === 'false') { const comImg = GIFLossless; successCallback(comImg); }
+    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = GIFsLossless; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = GIFLossy; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = GIFsLossy; successCallback(comImg); }
+    else { failureCallback('Wrong Form Data'); }
   });
+  comPromiseThree.then(
+    function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
+    function (error) { console.log(error); response.end(); }
+  );
 }
 
 // Compresses SVG image with Scour
-function compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
+function compressSVG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
+
   const { spawn } = require('child_process');
-  const comImage = spawn('scour', ['-i', inputImage, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outputImage]);
-  comImage.stdout.on('end', () => {
-    sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL);
+  const SVGLossless = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
+  const SVGsLossless = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
+  const SVGLossy = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
+  const SVGsLossy = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
+
+  let comPromiseFour = new Promise(function (successCallback, failureCallback) {
+    if (isLossy === 'false' && stripMeta === 'false') { const comImg = SVGLossless; successCallback(comImg); }
+    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = SVGsLossless; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = SVGLossy; successCallback(comImg); }
+    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = SVGsLossy; successCallback(comImg); }
+    else { failureCallback('Wrong Form Data'); }
   });
+  comPromiseFour.then(
+    function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
+    function (error) { console.log(error); response.end(); }
+  );
 }
 
 // Send Response in JSON
-function sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
-  let sizeBefore = Math.round(getFilesize(inputImage))
-  let sizeAfter = Math.round(getFilesize(outputImage));
+function sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
+  let sizeBefore = Math.round(getFilesize(inImgPath))
+  let sizeAfter = Math.round(getFilesize(outImgPath));
   let spaceSaved = sizeBefore - sizeAfter;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ imageType: imageExt, spaceSaved: spaceSaved + ' KB', sizeBefore: sizeBefore + ' KB', sizeAfter: sizeAfter + ' KB', inputImageURL: inputImageURL, outputImageURL: outputImageURL }));
+  let percentOptimised = Math.round((spaceSaved/sizeBefore) * 10000)/100;
+  response.setHeader('Content-Type', 'application/json');
+  response.end(JSON.stringify({ 
+    imageType: imgExt,
+    isLossy: isLossy,
+    stripMeta: stripMeta,
+    sizeBefore: sizeBefore + ' KB',
+    sizeAfter: sizeAfter + ' KB',
+    spaceSaved: spaceSaved + ' KB',
+    percentOptimised: percentOptimised + ' %',
+    inImgURL: inImgURL,
+    outImgURL: outImgURL
+  }));
 }
 
 // Get Filesize
-function getFilesize(inputPath) {
-  let stats = fs.statSync(inputPath);
+function getFilesize(inPath) {
+  let stats = fs.statSync(inPath);
   let sizeInKB = stats.size / 1024;
   return sizeInKB;
 }
