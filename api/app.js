@@ -33,6 +33,9 @@ http.createServer((req, res) => {
 
       // Uploaded Image Name with Temporary Location
       let tempImage = files.image.path;
+      
+      // Check if user has chosen OptiPNG Compression
+      if (typeof fields.optipng !== 'undefined' && fields.optipng === true) { let optipng = true; } else { let optipng = false; }
 
       // Just Image Name
       let imageName = files.image.name;
@@ -53,7 +56,8 @@ http.createServer((req, res) => {
       fs.rename(tempImage, inputImage, (err) => {
         if (err) throw err;
         else if (imageExt === 'JPG' || imageExt === 'JPEG') { compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputImageURL, outputImageURL); }
-        else if (imageExt === 'PNG') { compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imageExt === 'PNG' && optipng === false ) { compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
+        else if (imageExt === 'PNG' && optipng === true ) { compressPNGTwo(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
         else if (imageExt === 'GIF') { compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
         else if (imageExt === 'SVG') { compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL); }
         else { res.end(); }
@@ -65,7 +69,7 @@ http.createServer((req, res) => {
 });
 
 
-// Compresses JPEG images
+// Compresses JPEG image with JPEGOptim
 function compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputImageURL, outputImageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('jpegoptim', ['-m85', '--strip-all', inputImage, '--dest=' + outputPath]);
@@ -74,7 +78,7 @@ function compressJPG(inputImage, outputImage, outputPath, res, imageExt, inputIm
   });
 }
 
-// Compresses PNG images
+// Compresses PNG image with PNGQuant
 function compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inputImage, '--output', outputImage]);
@@ -83,7 +87,19 @@ function compressPNG(inputImage, outputImage, res, imageExt, inputImageURL, outp
   });
 }
 
-// Compresses GIF images
+// Compresses PNG image with OptiPNG and PNGQuant
+function compressPNGTwo(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
+  const { spawn } = require('child_process');
+  const comImage = spawn('optipng', ['-o1', inputImage, '-out', outputImage]);
+  comImage.stdout.on('end', () => {
+      const comImageTwo = spawn('pngquant', ['--force', '--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', outputImage, '--output', outputImage]);
+          comImageTwo.stdout.on('end', () => {
+          sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL);
+      });
+  });
+}
+
+// Compresses GIF image with GIFSicle
 function compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('gifsicle', ['-O3', '--lossy=85', inputImage, '-o', outputImage]);
@@ -92,7 +108,7 @@ function compressGIF(inputImage, outputImage, res, imageExt, inputImageURL, outp
   });
 }
 
-// Compresses SVG images
+// Compresses SVG image with Scour
 function compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
   const { spawn } = require('child_process');
   const comImage = spawn('scour', ['-i', inputImage, '--enable-id-stripping', '--enable-comment-stripping', '--shorten-ids', '--indent=none', '-o', outputImage]);
