@@ -105,8 +105,9 @@ function compressSVG(inputImage, outputImage, res, imageExt, inputImageURL, outp
 function sendResponse(inputImage, outputImage, res, imageExt, inputImageURL, outputImageURL) {
   let sizeBefore = Math.round(getFilesize(inputImage)) + ' KB';
   let sizeAfter = Math.round(getFilesize(outputImage)) + ' KB';
+  let spaceSaved = sizeBefore - sizeAfter;
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ imageType: imageExt, sizeBefore: sizeBefore, sizeAfter: sizeAfter, inputImageURL: inputImageURL, outputImageURL: outputImageURL }));
+  res.end(JSON.stringify({ imageType: imageExt, spaceSaved: spaceSaved, sizeBefore: sizeBefore, sizeAfter: sizeAfter, inputImageURL: inputImageURL, outputImageURL: outputImageURL }));
 }
 
 // Get Filesize
