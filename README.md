@@ -89,9 +89,10 @@ sudo nano /etc/nginx/sites-available/sixsilicon.com
 server {
     listen 80;
     server_name sixsilicon.com;
+
+    #  Web Root
     root /var/www/sixsilicon.com/api;
    
-    
     # API Folder
     location ~ ^/api {
 	    proxy_pass http://localhost:3000;
