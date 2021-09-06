@@ -50,6 +50,8 @@ app.post('/api', (req, res) => {
     let imgQualityGIF = (imgExt === 'GIF' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
     let imgQualitySVG = (imgExt === 'SVG' && inRange(parseInt(imgQualityTemp), 1, 10) ? imgQualityTemp : 'default');
 
+    console.log(imgQualityJPG, isLossy, stripMeta);
+
     // Input/Output Image Name with Permanent Location
     let inImgPath = inFolder + uniqueUUID + '/' + imgName;
     let outImgPath = outFolder + uniqueUUID + '/' + imgName;
@@ -79,7 +81,7 @@ app.listen(3000, () => {
 function compressJPG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, outImgDir, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  let comPromiseOne = new Promise(function (successCallback, failureCallback) {
+  let comPromiseOne = new Promise((successCallback, failureCallback) => {
 
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]);
@@ -104,10 +106,7 @@ function compressJPG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, outI
   });
   comPromiseOne.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function () {
-      console.log(1);
-      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
-    }
+    function () { response.end(JSON.stringify({ Error: 'Something Went Wrong' })); }
   );
 }
 
@@ -115,7 +114,7 @@ function compressJPG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, outI
 function compressPNG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  let comPromiseTwo = new Promise(function (successCallback, failureCallback) {
+  let comPromiseTwo = new Promise((successCallback, failureCallback) => {
 
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('optipng', ['-o2', inImgPath, '-out', outImgPath]);
@@ -140,10 +139,7 @@ function compressPNG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
   });
   comPromiseTwo.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function () {
-      console.log(2);
-      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
-    }
+    function () { response.end(JSON.stringify({ Error: 'Something Went Wrong' })); }
   );
 }
 
@@ -151,7 +147,7 @@ function compressPNG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
 function compressGIF(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  let comPromiseThree = new Promise(function (successCallback, failureCallback) {
+  let comPromiseThree = new Promise((successCallback, failureCallback) => {
 
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
@@ -176,10 +172,7 @@ function compressGIF(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
   });
   comPromiseThree.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function () {
-      console.log(3);
-      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
-    }
+    function () { response.end(JSON.stringify({ Error: 'Something Went Wrong' })); }
   );
 }
 
@@ -187,7 +180,7 @@ function compressGIF(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
 function compressSVG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  let comPromiseFour = new Promise(function (successCallback) {
+  let comPromiseFour = new Promise((successCallback) => {
 
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
@@ -212,10 +205,7 @@ function compressSVG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
   });
   comPromiseFour.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function () {
-      console.log(4);
-      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
-    }
+    function () { response.end(JSON.stringify({ Error: 'Something Went Wrong' })); }
   );
 }
 
