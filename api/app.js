@@ -7,7 +7,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 const uuid = require('uuid');
 const findRemoveSync = require('find-remove');
-const sanitizer = require('sanitize')();
+const sanitizer = require('sanitizer');
 
 // Variables
 const inFolder = '/var/www/sixsilicon.com/api/input/';
