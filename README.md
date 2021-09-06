@@ -11,7 +11,7 @@
 ![alt text](https://github.com/twoabd/Compressor/blob/main/docs/how-to.png?raw=true)
 
 ### JSON Structure     
-![alt text](https://github.com/twoabd/Compressor/blob/main/docs/json-structure.png&raw=true)
+![alt text](https://github.com/twoabd/Compressor/blob/main/docs/json-structure.png?raw=true)
 
 #### Install Nginx (Currently v1.18.0) and NodeJs LTS (Currently v14.17.6) on Ubuntu 20.04
 ```
