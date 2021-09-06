@@ -36,13 +36,11 @@ app.post('/api', (req, res) => {
     fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
 
     // Checking form data
-    let tempImg = (typeof files.inImg.path !== 'undefined' ? files.inImg.path : imageNotProvided(res));
-    let imgName = (typeof files.inImg.name !== 'undefined' ? validator.escape(trim(files.inImg.name)) : imageNotProvided(res));
+    let tempImg = (typeof files.inImg !== 'undefined' ? files.inImg.path : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
+    let imgName = (typeof files.inImg !== 'undefined' ? validator.escape(trim(files.inImg.name)) : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
     let stripMeta = (typeof fields.stripMeta !== 'undefined' ? validator.escape(trim(fields.stripMeta)) : 'true');
     let isLossy = (typeof fields.isLossy !== 'undefined' ? validator.escape(trim(fields.isLossy)) : 'true');
     let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? validator.escape(trim(fields.imgQuality)) : 'default');
-
-    console.log(tempImg, imgName, stripMeta, isLossy, imgQualityTemp);
 
     // Getting Input Image Extension
     let imgExt = imgName.split('.').pop().toUpperCase();
@@ -74,9 +72,10 @@ app.post('/api', (req, res) => {
 
   });
 });
-app.listen(3000, () => {
-  console.log(`API Server listening at http://localhost:3000`)
-})
+app.listen(3000, function(err){
+  if (err) console.log(err);
+  console.log("API Server listening at http://localhost:3000");
+});
 
 
 // Compresses JPEG image with JPEGOptim
@@ -276,14 +275,4 @@ function getFilesize(inPath) {
 // Return true if in range, otherwise false
 function inRange(x, min, max) {
   return ((x - min) * (x - max) <= 0);
-}
-
-// Error Response
-function imageNotProvided(response) {
-  response.end(JSON.stringify({ Error: 'Image not Provided' }));
-}
-
-// Error Response
-function fileNotImage(response) {
-  response.end(JSON.stringify({ Error: 'File not JPG, PNG, SVG or GIF' }));
 }
