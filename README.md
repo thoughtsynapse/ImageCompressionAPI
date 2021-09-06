@@ -2,7 +2,7 @@
 
 :exclamation: Image Compressor API compresses JPG, PNG, GIF & SVG images.   
 :exclamation: The compression type by default is lossy. You can choose loseless compression as per your needs.      
-:exclamation: You can also choose the quality of compression you would like. By default Quality is set to 85% for JPG and 65-85% for PNG.
+:exclamation: You can also choose the quality of compression you would like. By default Quality is set to 85% for JPG and 65-85% for PNG.   
 :exclamation: By default metadata is stripped from the images, you can choose to retain image metadata.    
 :exclamation: The API returns the URL of orignal and compressed image in a JSON object along with bunch of other data.      
 :exclamation: Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
@@ -156,12 +156,12 @@ sudo chmod -R 755 /var/www/sixsilicon.com
 
 #### Install Formidable, UUID, find-remove and PM2
 ```
+npm install express --save
 npm install formidable
 npm install uuid
 npm install -S find-remove
 npm install pm2 -g
 pm2 startup
-npm install sanitize --save
 ```
 
 #### Run Api Server
