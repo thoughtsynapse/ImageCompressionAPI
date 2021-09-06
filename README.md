@@ -16,6 +16,13 @@
 :exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10.   
 :exclamation: For GIF, do not choose any value lower than 5, quality loss will be significant.   
 
+### Strip Meta
+:exclamation: By Default image metadata will be stripped.
+:exclamation: You can choose not to strip meta with ```stripMeta=false```      
+:exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100.   
+:exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10.   
+:exclamation: For GIF, do not choose any value lower than 5, quality loss will be significant. 
+
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy.png?raw=true)  
 :exclamation: Learn to use Postman, it will save a lot of your time. 
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/Lossless.png?raw=true)   
