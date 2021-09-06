@@ -10,10 +10,10 @@
    
 ## How to use
 ### Compression Quality
-:exclamation: Default JPG Image Compression Quality = 85, you can choose between 1-100.   
-:exclamation: Default PNG Image Compression Quality = 85, you can choose between 1-100.   
-:exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100.   
-:exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10.   
+:exclamation: Default JPG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```         
+:exclamation: Default PNG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```     
+:exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```    
+:exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10 with ```imgQuality=YOURVALUE```    
 :exclamation: For GIF, do not choose any value lower than 5, quality loss will be significant.   
 
 ### Strip Meta
