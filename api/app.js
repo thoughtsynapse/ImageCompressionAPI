@@ -123,16 +123,23 @@ http.createServer((req, res) => {
 function compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  const JPEGLossless = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]);
-  const JPEGsLossless = spawn('jpegoptim', ['--strip-all', inImgPath, '--dest=' + outImgDir]);
-  const JPEGLossy = spawn('jpegoptim', ['-m85', inImgPath, '--dest=' + outImgDir]);
-  const JPEGsLossy = spawn('jpegoptim', ['-m85', '--strip-all', inImgPath, '--dest=' + outImgDir]);
-
   let comPromiseOne = new Promise(function (successCallback, failureCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { const comImg = JPEGLossless; successCallback(comImg); }
-    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = JPEGsLossless; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = JPEGLossy; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = JPEGsLossy; successCallback(comImg); }
+    if (isLossy === 'false' && stripMeta === 'false') { 
+      const comImg = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]); 
+      successCallback(comImg);
+    }
+    else if (isLossy === 'false' && stripMeta === 'true') {
+      const comImg = spawn('jpegoptim', ['--strip-all', inImgPath, '--dest=' + outImgDir]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'false') {
+      const comImg = spawn('jpegoptim', ['-m85', inImgPath, '--dest=' + outImgDir]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'true') {
+      const comImg = spawn('jpegoptim', ['-m85', '--strip-all', inImgPath, '--dest=' + outImgDir]);
+      successCallback(comImg);
+    }
     else { failureCallback(); }
   });
   comPromiseOne.then(
@@ -148,16 +155,23 @@ function compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, respo
 function compressPNG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  const PNGLossless = spawn('optipng', ['-o2', inImgPath, '-out', outImgPath]);
-  const PNGsLossless = spawn('optipng', ['-o2', inImgPath, '-strip all', '-out', outImgPath]);
-  const PNGLossy = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=65-85', inImgPath, '--out', outImgPath]);
-  const PNGsLossy = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inImgPath, '--out', outImgPath]);
-
   let comPromiseTwo = new Promise(function (successCallback, failureCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { const comImg = PNGLossless; successCallback(comImg); }
-    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = PNGsLossless; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = PNGLossy; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = PNGsLossy; successCallback(comImg); }
+    if (isLossy === 'false' && stripMeta === 'false') { 
+      const comImg = spawn('optipng', ['-o2', inImgPath, '-out', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'false' && stripMeta === 'true') {
+      const comImg = spawn('optipng', ['-o2', inImgPath, '-strip all', '-out', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'false') {
+      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=65-85', inImgPath, '--out', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'true') {
+      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inImgPath, '--out', outImgPath]);
+      successCallback(comImg);
+    }
     else { failureCallback(); }
   });
   comPromiseTwo.then(
@@ -173,16 +187,23 @@ function compressPNG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
 function compressGIF(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  const GIFLossless = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
-  const GIFsLossless = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
-  const GIFLossy = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
-  const GIFsLossy = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
-
   let comPromiseThree = new Promise(function (successCallback, failureCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { const comImg = GIFLossless; successCallback(comImg); }
-    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = GIFsLossless; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = GIFLossy; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = GIFsLossy; successCallback(comImg); }
+    if (isLossy === 'false' && stripMeta === 'false') { 
+      const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'false' && stripMeta === 'true') {
+      const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'false') {
+      const comImg = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'true') {
+      const comImg = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
+      successCallback(comImg);
+    }
     else { failureCallback(); }
   });
   comPromiseThree.then(
@@ -198,16 +219,23 @@ function compressGIF(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
 function compressSVG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL) {
 
   const { spawn } = require('child_process');
-  const SVGLossless = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
-  const SVGsLossless = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
-  const SVGLossy = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
-  const SVGsLossy = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
-
   let comPromiseFour = new Promise(function (successCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { const comImg = SVGLossless; successCallback(comImg); }
-    else if (isLossy === 'false' && stripMeta === 'true') { const comImg = SVGsLossless; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'false') { const comImg = SVGLossy; successCallback(comImg); }
-    else if (isLossy === 'true' && stripMeta === 'true') { const comImg = SVGsLossy; successCallback(comImg); }
+    if (isLossy === 'false' && stripMeta === 'false') { 
+      const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'false' && stripMeta === 'true') {
+      const comImg = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'false') {
+      const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
+      successCallback(comImg);
+    }
+    else if (isLossy === 'true' && stripMeta === 'true') {
+      const comImg =  spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
+      successCallback(comImg);
+    }
     else { failureCallback(); }
   });
   comPromiseFour.then(
