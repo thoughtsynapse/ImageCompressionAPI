@@ -32,10 +32,10 @@ http.createServer((req, res) => {
       fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
 
       // Getting form data
-      if (typeof tempImg !== 'undefined') { var tempImg = files.inImg.path; }
-      if (typeof imgName !== 'undefined') { var imgName = files.inImg.name; }
-      if (typeof stripMeta !== 'undefined') { var stripMeta = fields.stripMeta; }
-      if (typeof isLossy !== 'undefined') { var isLossy = fields.isLossy; }
+      let tempImg = files.inImg.path;
+      let imgName = files.inImg.name;
+      let stripMeta = fields.stripMeta;
+      let isLossy = fields.isLossy;
 
       // Input/Output Image Name with Permanent Location
       let inImgPath = inFolder + uniqueUUID + '/' + imgName;
