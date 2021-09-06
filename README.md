@@ -8,7 +8,12 @@
 :exclamation: Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
 :exclamation: Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.    
    
-## How to use
+## How to use   
+
+### Compression Type
+:exclamation: By Default image cpmpression type is lossy.   
+:exclamation: You can choose lossless compression with ```isLossy=false```     
+
 ### Compression Quality
 :exclamation: Default JPG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```         
 :exclamation: Default PNG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```     
@@ -19,9 +24,6 @@
 ### Strip Meta
 :exclamation: By Default image metadata will be stripped.   
 :exclamation: You can choose not to strip meta with ```stripMeta=false```      
-:exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100.   
-:exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10.   
-:exclamation: For GIF, do not choose any value lower than 5, quality loss will be significant. 
 
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy.png?raw=true)  
 :exclamation: Learn to use Postman, it will save a lot of your time. 
