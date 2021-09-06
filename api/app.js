@@ -2,7 +2,8 @@
 'use strict';
 
 // Module dependencies
-const http = require('http');
+const express = require('express')
+const app = express()
 const formidable = require('formidable');
 const fs = require('fs');
 const uuid = require('uuid');
@@ -22,8 +23,7 @@ setInterval(() => {
 }, 3600000);
 
 // Creating Server, Send a POST request to https://sixsilicon.com/api through Postman with an image file and key 'inImg'
-http.createServer((req, res) => {
-  if (req.url == '/api') {
+app.post('/api', (req, res) => {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
 
@@ -73,10 +73,10 @@ http.createServer((req, res) => {
       });
 
     });
-  }
-}).listen(3000, 'localhost', () => {
-  console.log(`Server running at http://localhost:3000/`);
 });
+app.listen(3000, () => {
+  console.log(`API Server listening at http://localhost:3000`)
+})
 
 
 // Compresses JPEG image with JPEGOptim
