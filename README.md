@@ -9,7 +9,7 @@
 :exclamation: Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.    
    
 ### How to use     
-![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy?raw=true)    
+![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy.png?raw=true)    
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossless.png?raw=true)
 
 #### Install Nginx (Currently v1.18.0) and NodeJs LTS (Currently v14.17.6) on Ubuntu 20.04
