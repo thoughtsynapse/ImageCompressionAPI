@@ -4,11 +4,11 @@
 // Module dependencies
 const express = require('express');
 const app = express();
+const validator = require('validator');
 const formidable = require('formidable');
 const fs = require('fs');
 const uuid = require('uuid');
 const findRemoveSync = require('find-remove');
-const sanitizer = require('sanitizer');
 
 // Variables
 const inFolder = '/var/www/sixsilicon.com/api/input/';
@@ -22,57 +22,57 @@ setInterval(() => {
   findRemoveSync(outFolder, { age: { seconds: 3600 }, dir: '*', ignore: 'index.html' });
 }, 3600000);
 
-// Creating Server, Send a POST request to https://sixsilicon.com/api through Postman with an image file and key 'inImg'
+// Creating Server
 app.post('/api', (req, res) => {
-    let form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
+  let form = new formidable.IncomingForm();
+  form.parse(req, function (err, fields, files) {
 
-      // Creating Unique Input/Output sub-folders
-      let uniqueUUID = uuid.v1();
-      fs.mkdir(inFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
-      fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
+    //Setting Headers
+    res.setHeader('Content-Type', 'application/json');
 
-      // Checking form data
-      let tempImg = (typeof files.inImg.path !== 'undefined' ? sanitizer.value(files.inImg.path, 'string') : imageNotProvided(res));
-      let imgName = (typeof files.inImg.name !== 'undefined' ? sanitizer.value(files.inImg.name, 'string') : imageNotProvided(res));
-      let stripMetaTemp = (typeof fields.stripMeta !== 'undefined' ? sanitizer.value(fields.stripMeta, 'string') : 'true');
-      let isLossyTemp = (typeof fields.isLossy !== 'undefined' ? sanitizer.value(fields.isLossy, 'string') : 'true');
-      let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? sanitizer.value(fields.imgQuality.toString(), 'string') : 'default');
+    // Creating Unique Input/Output sub-folders
+    let uniqueUUID = uuid.v1();
+    fs.mkdir(inFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
+    fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
 
-      // Getting Input Image Extension
-      let imgExt = imgName.split('.').pop().toUpperCase();
-      let imgQualityJPG = (imgExt === 'JPG' || imgExt === 'JPEG' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
-      let imgQualityPNG = (imgExt === 'PNG' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
-      let imgQualityGIF = (imgExt === 'GIF' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
-      let imgQualitySVG = (imgExt === 'SVG' && inRange(parseInt(imgQualityTemp), 1, 10) ? imgQualityTemp : 'default');
+    // Checking form data
+    let tempImg = (typeof files.inImg.path !== 'undefined' ? files.inImg.path : imageNotProvided(res));
+    let imgName = (typeof files.inImg.name !== 'undefined' ? validator.escape(trim(files.inImg.name)) : imageNotProvided(res));
+    let stripMeta = (typeof fields.stripMeta !== 'undefined' ? validator.escape(trim(fields.stripMeta)) : 'true');
+    let isLossy = (typeof fields.isLossy !== 'undefined' ? validator.escape(trim(fields.isLossy)) : 'true');
+    let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? validator.escape(trim(fields.imgQuality)) : 'default');
 
-      // If stripMeta and isLossy are not true then make them false, since they would have been booleam if JS didn't converted them into strings. 
-      let stripMeta = (stripMetaTemp === 'true' ? 'true' : 'false');
-      let isLossy = (isLossyTemp === 'true' ? 'true' : 'false');
+    console.log(tempImg, imgName, stripMeta, isLossy, imgQualityTemp);
 
-      // Input/Output Image Name with Permanent Location
-      let inImgPath = inFolder + uniqueUUID + '/' + imgName;
-      let outImgPath = outFolder + uniqueUUID + '/' + imgName;
-      let outImgDir = outFolder + uniqueUUID; // Output image folder path for JPEGOptim as it doesn't accept full image path.
+    // Getting Input Image Extension
+    let imgExt = imgName.split('.').pop().toUpperCase();
+    let imgQualityJPG = (imgExt === 'JPG' || imgExt === 'JPEG' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
+    let imgQualityPNG = (imgExt === 'PNG' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
+    let imgQualityGIF = (imgExt === 'GIF' && inRange(parseInt(imgQualityTemp), 1, 100) ? imgQualityTemp : 'default');
+    let imgQualitySVG = (imgExt === 'SVG' && inRange(parseInt(imgQualityTemp), 1, 10) ? imgQualityTemp : 'default');
 
-      // Input/Output Image Public HTTP URL
-      let inImgURL = baseInputURL + uniqueUUID + '/' + imgName;
-      let outImgURL = baseOutputURL + uniqueUUID + '/' + imgName;
+    // Input/Output Image Name with Permanent Location
+    let inImgPath = inFolder + uniqueUUID + '/' + imgName;
+    let outImgPath = outFolder + uniqueUUID + '/' + imgName;
+    let outImgDir = outFolder + uniqueUUID; // Output image folder path for JPEGOptim as it doesn't accept full image path.
 
-      // Moving file from temporary to input folder, on success one of the compression function will be called!
-      fs.rename(tempImg, inImgPath, (err) => {
-        if (err) throw err;
-        else if (imgExt === 'JPG' || imgExt === 'JPEG') { compressJPG(isLossy, stripMeta, imgQualityJPG, inImgPath, outImgPath, outImgDir, res, imgExt, inImgURL, outImgURL); }
-        else if (imgExt === 'PNG') { compressPNG(isLossy, stripMeta, imgQualityPNG, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-        else if (imgExt === 'GIF') { compressGIF(isLossy, stripMeta, imgQualityGIF, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-        else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, imgQualitySVG, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-        else {
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ Error: 'Image not JPG, PNG, SVG or GIF' }));
-        }
-      });
+    // Input/Output Image Public HTTP URL
+    let inImgURL = baseInputURL + uniqueUUID + '/' + imgName;
+    let outImgURL = baseOutputURL + uniqueUUID + '/' + imgName;
 
+    // Moving file from temporary to input folder, on success one of the compression function will be called!
+    fs.rename(tempImg, inImgPath, (err) => {
+      if (err) throw err;
+      else if (imgExt === 'JPG' || imgExt === 'JPEG') { compressJPG(isLossy, stripMeta, imgQualityJPG, inImgPath, outImgPath, outImgDir, res, imgExt, inImgURL, outImgURL); }
+      else if (imgExt === 'PNG') { compressPNG(isLossy, stripMeta, imgQualityPNG, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+      else if (imgExt === 'GIF') { compressGIF(isLossy, stripMeta, imgQualityGIF, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+      else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, imgQualitySVG, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+      else {
+        res.end(JSON.stringify({ Error: 'Image not JPG, PNG, SVG or GIF' }));
+      }
     });
+
+  });
 });
 app.listen(3000, () => {
   console.log(`API Server listening at http://localhost:3000`)
@@ -115,7 +115,7 @@ function compressJPG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, outI
   comPromiseOne.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
-      response.setHeader('Content-Type', 'application/json');
+      console.log(1);
       response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
@@ -157,7 +157,7 @@ function compressPNG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
   comPromiseTwo.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
-      response.setHeader('Content-Type', 'application/json');
+      console.log(2);
       response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
@@ -199,7 +199,7 @@ function compressGIF(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
   comPromiseThree.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
-      response.setHeader('Content-Type', 'application/json');
+      console.log(3);
       response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
@@ -241,7 +241,7 @@ function compressSVG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
   comPromiseFour.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
-      response.setHeader('Content-Type', 'application/json');
+      console.log(4);
       response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
@@ -253,7 +253,6 @@ function sendResponse(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, res
   let sizeAfter = Math.round(getFilesize(outImgPath));
   let spaceSaved = sizeBefore - sizeAfter;
   let percentOptimised = Math.round((spaceSaved / sizeBefore) * 10000) / 100;
-  response.setHeader('Content-Type', 'application/json');
   response.end(JSON.stringify({
     imageType: imgExt,
     isLossy: isLossy,
@@ -281,12 +280,10 @@ function inRange(x, min, max) {
 
 // Error Response
 function imageNotProvided(response) {
-  response.setHeader('Content-Type', 'application/json');
   response.end(JSON.stringify({ Error: 'Image not Provided' }));
 }
 
 // Error Response
 function fileNotImage(response) {
-  response.setHeader('Content-Type', 'application/json');
   response.end(JSON.stringify({ Error: 'File not JPG, PNG, SVG or GIF' }));
 }
