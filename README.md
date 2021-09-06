@@ -17,7 +17,7 @@
 :exclamation: For GIF, do not choose any value lower than 5, quality loss will be significant.   
 
 ### Strip Meta
-:exclamation: By Default image metadata will be stripped.
+:exclamation: By Default image metadata will be stripped.   
 :exclamation: You can choose not to strip meta with ```stripMeta=false```      
 :exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100.   
 :exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10.   
