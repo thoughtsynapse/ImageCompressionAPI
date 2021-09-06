@@ -9,7 +9,7 @@
    
    
    
-✅  How to use     
+### How to use     
 
 ![alt text](https://raw.githubusercontent.com/twoabd/Compressor/main/postman.png?token=AMOOB2KQDMISFYQEIR66P5TBH2VIK&raw=true)
 
