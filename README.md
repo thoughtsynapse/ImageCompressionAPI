@@ -1,10 +1,10 @@
 ### Image Compressor API
 
-✅  Image Compressor API compresses JPG, PNG, GIF & SVG images, the compression type is lossy.   
-✅  You can choose the quality of compression you would like.   
-✅  The API returns the URL of orignal and compressed image in a JSON object along with orignal and compressed image size in KB.   
-✅  Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
-✅  Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.   
+- [x] Image Compressor API compresses JPG, PNG, GIF & SVG images, the compression type is lossy.   
+- [x] You can choose the quality of compression you would like.   
+- [x] The API returns the URL of orignal and compressed image in a JSON object along with orignal and compressed image size in KB.   
+- [x] Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
+- [x] Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.   
    
    
    
