@@ -41,8 +41,8 @@ http.createServer((req, res) => {
             isLossy: fields.isLossy
           };
           successCallback(postVar);
-        } 
-        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta !== 'undefined' && typeof fields.isLossy === 'undefined'){
+        }
+        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta !== 'undefined' && typeof fields.isLossy === 'undefined') {
           const postVar = {
             tempImg: files.inImg.path,
             imgName: files.inImg.name,
@@ -51,7 +51,7 @@ http.createServer((req, res) => {
           };
           successCallback(postVar);
         }
-        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta === 'undefined' && typeof fields.isLossy !== 'undefined'){
+        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta === 'undefined' && typeof fields.isLossy !== 'undefined') {
           const postVar = {
             tempImg: files.inImg.path,
             imgName: files.inImg.name,
@@ -60,7 +60,7 @@ http.createServer((req, res) => {
           };
           successCallback(postVar);
         }
-        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta === 'undefined' && typeof fields.isLossy === 'undefined'){
+        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta === 'undefined' && typeof fields.isLossy === 'undefined') {
           const postVar = {
             tempImg: files.inImg.path,
             imgName: files.inImg.name,
@@ -102,13 +102,13 @@ http.createServer((req, res) => {
             else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
             else {
               res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ Error : 'Image not JPG, PNG, SVG or GIF' }));
+              res.end(JSON.stringify({ Error: 'Image not JPG, PNG, SVG or GIF' }));
             }
           });
         },
         function () {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ Error : 'Image not Provided' }));
+          res.end(JSON.stringify({ Error: 'Image not Provided' }));
         }
       );
 
@@ -124,29 +124,27 @@ function compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, respo
 
   const { spawn } = require('child_process');
   let comPromiseOne = new Promise(function (successCallback, failureCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { 
-      const comImg = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]); 
-      successCallback(comImg);
-    }
+
+    if (isLossy === 'false' && stripMeta === 'false') {
+      const comImg = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]);
+      successCallback(comImg); }
     else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('jpegoptim', ['--strip-all', inImgPath, '--dest=' + outImgDir]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') {
       const comImg = spawn('jpegoptim', ['-m85', inImgPath, '--dest=' + outImgDir]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') {
       const comImg = spawn('jpegoptim', ['-m85', '--strip-all', inImgPath, '--dest=' + outImgDir]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else { failureCallback(); }
+    
   });
   comPromiseOne.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
       response.setHeader('Content-Type', 'application/json');
-      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
 }
@@ -156,29 +154,27 @@ function compressPNG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
 
   const { spawn } = require('child_process');
   let comPromiseTwo = new Promise(function (successCallback, failureCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { 
+
+    if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('optipng', ['-o2', inImgPath, '-out', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('optipng', ['-o2', inImgPath, '-strip all', '-out', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') {
       const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=65-85', inImgPath, '--out', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') {
       const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inImgPath, '--out', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else { failureCallback(); }
+
   });
   comPromiseTwo.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
       response.setHeader('Content-Type', 'application/json');
-      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
 }
@@ -188,29 +184,27 @@ function compressGIF(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
 
   const { spawn } = require('child_process');
   let comPromiseThree = new Promise(function (successCallback, failureCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { 
+
+    if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') {
       const comImg = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') {
       const comImg = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else { failureCallback(); }
+
   });
   comPromiseThree.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
       response.setHeader('Content-Type', 'application/json');
-      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
 }
@@ -220,29 +214,27 @@ function compressSVG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
 
   const { spawn } = require('child_process');
   let comPromiseFour = new Promise(function (successCallback) {
-    if (isLossy === 'false' && stripMeta === 'false') { 
+
+    if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') {
       const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') {
-      const comImg =  spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
-      successCallback(comImg);
-    }
+      const comImg = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
+      successCallback(comImg); }
     else { failureCallback(); }
+
   });
   comPromiseFour.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
     function () {
       response.setHeader('Content-Type', 'application/json');
-      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+      response.end(JSON.stringify({ Error: 'Something Went Wrong' }));
     }
   );
 }
