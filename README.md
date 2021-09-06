@@ -161,6 +161,7 @@ npm install uuid
 npm install -S find-remove
 npm install pm2 -g
 pm2 startup
+npm install sanitize --save
 ```
 
 #### Run Api Server
