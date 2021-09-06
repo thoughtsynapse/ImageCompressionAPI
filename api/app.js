@@ -30,17 +30,18 @@ app.post('/api', (req, res) => {
     //Setting Headers
     res.setHeader('Content-Type', 'application/json');
 
+    // Checking form data
+    if (!files.inImg || files.inImg.size === 0) { return res.end(JSON.stringify({ Error: 'Image not Provided' })); }
+    let tempImg = files.inImg.path;
+    let imgName = validator.escape(files.inImg.name).trim();
+    let stripMeta = (typeof fields.stripMeta !== 'undefined' ? validator.escape(fields.stripMeta).trim() : 'true');
+    let isLossy = (typeof fields.isLossy !== 'undefined' ? validator.escape(fields.isLossy).trim() : 'true');
+    let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? validator.escape(fields.imgQuality).trim() : 'default');
+
     // Creating Unique Input/Output sub-folders
     let uniqueUUID = uuid.v1();
     fs.mkdir(inFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
     fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
-
-    // Checking form data
-    let tempImg = (typeof files.inImg !== 'undefined' ? files.inImg.path : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
-    let imgName = (typeof files.inImg !== 'undefined' ? validator.escape(files.inImg.name).trim() : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
-    let stripMeta = (typeof fields.stripMeta !== 'undefined' ? validator.escape(fields.stripMeta).trim() : 'true');
-    let isLossy = (typeof fields.isLossy !== 'undefined' ? validator.escape(fields.isLossy).trim() : 'true');
-    let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? validator.escape(fields.imgQuality).trim() : 'default');
 
     // Getting Input Image Extension
     let imgExt = imgName.split('.').pop().toUpperCase();
@@ -65,11 +66,8 @@ app.post('/api', (req, res) => {
       else if (imgExt === 'PNG') { compressPNG(isLossy, stripMeta, imgQualityPNG, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
       else if (imgExt === 'GIF') { compressGIF(isLossy, stripMeta, imgQualityGIF, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
       else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, imgQualitySVG, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-      else {
-        res.end(JSON.stringify({ Error: 'Image not JPG, PNG, SVG or GIF' }));
-      }
+      else { res.end(JSON.stringify({ Error: 'Image not JPG, PNG, SVG or GIF' })); }
     });
-
   });
 });
 app.listen(3000, () => {
@@ -86,28 +84,22 @@ function compressJPG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, outI
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('jpegoptim', [inImgPath, '--dest=' + outImgDir]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'false' && stripMeta === 'true') {
+    } else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('jpegoptim', ['--strip-all', inImgPath, '--dest=' + outImgDir]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
       const comImg = spawn('jpegoptim', ['-m85', inImgPath, '--dest=' + outImgDir]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
       const comImg = spawn('jpegoptim', ['-m' + imgQuality, inImgPath, '--dest=' + outImgDir]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
       const comImg = spawn('jpegoptim', ['-m85', '--strip-all', inImgPath, '--dest=' + outImgDir]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
       const comImg = spawn('jpegoptim', ['-m' + imgQuality, '--strip-all', inImgPath, '--dest=' + outImgDir]);
       successCallback(comImg);
-    }
-    else { failureCallback(); }
+    } else { failureCallback(); }
 
   });
   comPromiseOne.then(
@@ -128,28 +120,22 @@ function compressPNG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('optipng', ['-o2', inImgPath, '-out', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'false' && stripMeta === 'true') {
+    } else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('optipng', ['-o2', inImgPath, '-strip all', '-out', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
       const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=1-85', inImgPath, '--out', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
       const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=1-' + imgQuality, inImgPath, '--out', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
       const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=1-85', inImgPath, '--out', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
       const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=1-' + imgQuality, inImgPath, '--out', outImgPath]);
       successCallback(comImg);
-    }
-    else { failureCallback(); }
+    } else { failureCallback(); }
 
   });
   comPromiseTwo.then(
@@ -170,28 +156,22 @@ function compressGIF(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'false' && stripMeta === 'true') {
+    } else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('gifsicle', ['-O3', inImgPath, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
       const comImg = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
       const comImg = spawn('gifsicle', ['-O3', '--lossy=' + imgQuality, inImgPath, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
       const comImg = spawn('gifsicle', ['-O3', '--lossy=85', inImgPath, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
       const comImg = spawn('gifsicle', ['-O3', '--lossy=' + imgQuality, inImgPath, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else { failureCallback(); }
+    } else { failureCallback(); }
 
   });
   comPromiseThree.then(
@@ -212,28 +192,22 @@ function compressSVG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
     if (isLossy === 'false' && stripMeta === 'false') {
       const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'false' && stripMeta === 'true') {
+    } else if (isLossy === 'false' && stripMeta === 'true') {
       const comImg = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=10', '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
       const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=5', '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
       const comImg = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '--set-precision=' + imgQuality, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
       const comImg = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=5', '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
+    } else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
       const comImg = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '--set-precision=' + imgQuality, '-o', outImgPath]);
       successCallback(comImg);
-    }
-    else { failureCallback(); }
+    } else { failureCallback(); }
 
   });
   comPromiseFour.then(
