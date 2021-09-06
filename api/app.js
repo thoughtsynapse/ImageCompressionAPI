@@ -37,10 +37,10 @@ app.post('/api', (req, res) => {
 
     // Checking form data
     let tempImg = (typeof files.inImg !== 'undefined' ? files.inImg.path : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
-    let imgName = (typeof files.inImg !== 'undefined' ? validator.escape(trim(files.inImg.name)) : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
-    let stripMeta = (typeof fields.stripMeta !== 'undefined' ? validator.escape(trim(fields.stripMeta)) : 'true');
-    let isLossy = (typeof fields.isLossy !== 'undefined' ? validator.escape(trim(fields.isLossy)) : 'true');
-    let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? validator.escape(trim(fields.imgQuality)) : 'default');
+    let imgName = (typeof files.inImg !== 'undefined' ? validator.escape(files.inImg.name).trim() : res.end(JSON.stringify({ Error: 'Image not Provided' })) );
+    let stripMeta = (typeof fields.stripMeta !== 'undefined' ? validator.escape(fields.stripMeta).trim() : 'true');
+    let isLossy = (typeof fields.isLossy !== 'undefined' ? validator.escape(fields.isLossy).trim() : 'true');
+    let imgQualityTemp = (typeof fields.imgQuality !== 'undefined' ? validator.escape(fields.imgQuality).trim() : 'default');
 
     // Getting Input Image Extension
     let imgExt = imgName.split('.').pop().toUpperCase();
@@ -72,9 +72,8 @@ app.post('/api', (req, res) => {
 
   });
 });
-app.listen(3000, function(err){
-  if (err) console.log(err);
-  console.log("API Server listening at http://localhost:3000");
+app.listen(3000, () => {
+  console.log(`API Server listening at http://localhost:3000`)
 });
 
 
@@ -135,19 +134,19 @@ function compressPNG(isLossy, stripMeta, imgQuality, inImgPath, outImgPath, resp
       successCallback(comImg);
     }
     else if (isLossy === 'true' && stripMeta === 'false' && imgQuality === 'default') {
-      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=65-85', inImgPath, '--out', outImgPath]);
+      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=1-85', inImgPath, '--out', outImgPath]);
       successCallback(comImg);
     }
     else if (isLossy === 'true' && stripMeta === 'false' && imgQuality !== 'default') {
-      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=' + imgQuality, inImgPath, '--out', outImgPath]);
+      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--quality=1-' + imgQuality, inImgPath, '--out', outImgPath]);
       successCallback(comImg);
     }
     else if (isLossy === 'true' && stripMeta === 'true' && imgQuality === 'default') {
-      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=65-85', inImgPath, '--out', outImgPath]);
+      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=1-85', inImgPath, '--out', outImgPath]);
       successCallback(comImg);
     }
     else if (isLossy === 'true' && stripMeta === 'true' && imgQuality !== 'default') {
-      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=' + imgQuality, inImgPath, '--out', outImgPath]);
+      const comImg = spawn('pngquant', ['--skip-if-larger', '--speed=1', '--strip', '--quality=1-' + imgQuality, inImgPath, '--out', outImgPath]);
       successCallback(comImg);
     }
     else { failureCallback(); }
