@@ -1,4 +1,4 @@
-### Image Compressor API
+### Image Compression API
 
 :exclamation: Image Compressor API compresses JPG, PNG, GIF & SVG images.   
 :exclamation: The compression type by default is lossy. You can choose loseless compression as per your needs.      
