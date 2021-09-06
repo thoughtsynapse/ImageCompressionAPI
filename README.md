@@ -156,12 +156,12 @@ sudo chmod -R 755 /var/www/sixsilicon.com
 
 #### Install Formidable, UUID, find-remove and PM2
 ```
+npm install express --save
 npm install formidable
 npm install uuid
 npm install -S find-remove
 npm install pm2 -g
 pm2 startup
-npm install sanitize --save
 ```
 
 #### Run Api Server
