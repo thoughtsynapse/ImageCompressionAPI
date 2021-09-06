@@ -9,6 +9,11 @@
 :exclamation: Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.    
    
 ## How to use
+### Compression Quality
+:exclamation: Default JPG Image Compression Quality = 85, you can choose between 1-100.   
+:exclamation: Default PNG Image Compression Quality = 85, you can choose between 1-100.   
+:exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100.   
+:exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10.   
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy.png?raw=true)  
 :exclamation: Learn to use Postman, it will save a lot of your time. 
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/Lossless.png?raw=true)   
