@@ -6,6 +6,8 @@
 ✅  Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
 ✅  Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.   
    
+   
+   
 ✅  How to use   
 ![alt text](https://raw.githubusercontent.com/twoabd/Compressor/main/postman.png?token=AMOOB2KQDMISFYQEIR66P5TBH2VIK&raw=true)
 
