@@ -2,8 +2,8 @@
 'use strict';
 
 // Module dependencies
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 const formidable = require('formidable');
 const fs = require('fs');
 const uuid = require('uuid');
