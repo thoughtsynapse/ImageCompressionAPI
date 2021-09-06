@@ -6,6 +6,10 @@
    
 ## How to use   
 
+### POST Request, No GET
+:exclamation: It receives all parameters in POST request.     
+:exclamation: You can choose one image at a time with ```inImg=IMAGEFILE```      
+
 ### Compression Type
 :exclamation: By Default image cpmpression type is lossy.   
 :exclamation: You can choose lossless compression with ```isLossy=false```     
