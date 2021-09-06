@@ -31,33 +31,87 @@ http.createServer((req, res) => {
       fs.mkdir(inFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
       fs.mkdir(outFolder + uniqueUUID, { recursive: false }, (err) => { if (err) throw err; });
 
-      // Getting form data
-      let tempImg = files.inImg.path;
-      let imgName = files.inImg.name;
-      let stripMeta = fields.stripMeta;
-      let isLossy = fields.isLossy;
-
-      // Input/Output Image Name with Permanent Location
-      let inImgPath = inFolder + uniqueUUID + '/' + imgName;
-      let outImgPath = outFolder + uniqueUUID + '/' + imgName;
-      let outImgDir = outFolder + uniqueUUID; // Output image folder path for JPEGOptim as it doesn't accept full image path.
-
-      // Getting Input Image Extension
-      let imgExt = imgName.split('.').pop().toUpperCase();
-
-      // Input/Output Image Public HTTP URL
-      let inImgURL = baseInputURL + uniqueUUID + '/' + imgName;
-      let outImgURL = baseOutputURL + uniqueUUID + '/' + imgName;
-
-      // Moving file from temporary to input folder, on success one of the compression function will be called!
-      fs.rename(tempImg, inImgPath, (err) => {
-        if (err) throw err;
-        else if (imgExt === 'JPG' || imgExt === 'JPEG') { compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, res, imgExt, inImgURL, outImgURL); }
-        else if (imgExt === 'PNG') { compressPNG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-        else if (imgExt === 'GIF') { compressGIF(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-        else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
-        else { res.end(); }
+      // Checking form data, Promise
+      let comPromiseZero = new Promise(function (successCallback, failureCallback) {
+        if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta !== 'undefined' && typeof fields.isLossy !== 'undefined') {
+          const postVar = {
+            tempImg: files.inImg.path,
+            imgName: files.inImg.name,
+            stripMeta: fields.stripMeta,
+            isLossy: fields.isLossy
+          };
+          successCallback(postVar);
+        } 
+        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta !== 'undefined' && typeof fields.isLossy === 'undefined'){
+          const postVar = {
+            tempImg: files.inImg.path,
+            imgName: files.inImg.name,
+            stripMeta: fields.stripMeta,
+            isLossy: 'true'
+          };
+          successCallback(postVar);
+        }
+        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta === 'undefined' && typeof fields.isLossy !== 'undefined'){
+          const postVar = {
+            tempImg: files.inImg.path,
+            imgName: files.inImg.name,
+            stripMeta: 'true',
+            isLossy: fields.isLossy
+          };
+          successCallback(postVar);
+        }
+        else if (typeof files.inImg.path !== 'undefined' && typeof fields.stripMeta === 'undefined' && typeof fields.isLossy === 'undefined'){
+          const postVar = {
+            tempImg: files.inImg.path,
+            imgName: files.inImg.name,
+            stripMeta: 'true',
+            isLossy: 'true'
+          };
+          successCallback(postVar);
+        }
+        else if (typeof files.inImg.path === 'undefined') {
+          failureCallback();
+        }
       });
+      comPromiseZero.then(
+        function (postVar) {
+
+          let tempImg = postVar.tempImg;
+          let imgName = postVar.imgName;
+          let stripMeta = postVar.stripMeta;
+          let isLossy = postVar.isLossy;
+
+          // Input/Output Image Name with Permanent Location
+          let inImgPath = inFolder + uniqueUUID + '/' + imgName;
+          let outImgPath = outFolder + uniqueUUID + '/' + imgName;
+          let outImgDir = outFolder + uniqueUUID; // Output image folder path for JPEGOptim as it doesn't accept full image path.
+
+          // Getting Input Image Extension
+          let imgExt = imgName.split('.').pop().toUpperCase();
+
+          // Input/Output Image Public HTTP URL
+          let inImgURL = baseInputURL + uniqueUUID + '/' + imgName;
+          let outImgURL = baseOutputURL + uniqueUUID + '/' + imgName;
+
+          // Moving file from temporary to input folder, on success one of the compression function will be called!
+          fs.rename(tempImg, inImgPath, (err) => {
+            if (err) throw err;
+            else if (imgExt === 'JPG' || imgExt === 'JPEG') { compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, res, imgExt, inImgURL, outImgURL); }
+            else if (imgExt === 'PNG') { compressPNG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+            else if (imgExt === 'GIF') { compressGIF(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+            else if (imgExt === 'SVG') { compressSVG(isLossy, stripMeta, inImgPath, outImgPath, res, imgExt, inImgURL, outImgURL); }
+            else {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ Error : 'Image not JPG, PNG, SVG or GIF' }));
+            }
+          });
+        },
+        function () {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ Error : 'Image not Provided' }));
+        }
+      );
+
     });
   }
 }).listen(3000, 'localhost', () => {
@@ -79,11 +133,14 @@ function compressJPG(isLossy, stripMeta, inImgPath, outImgPath, outImgDir, respo
     else if (isLossy === 'false' && stripMeta === 'true') { const comImg = JPEGsLossless; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') { const comImg = JPEGLossy; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') { const comImg = JPEGsLossy; successCallback(comImg); }
-    else { failureCallback('Wrong Form Data'); }
+    else { failureCallback(); }
   });
   comPromiseOne.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function (error) { console.log(error); response.end(); }
+    function () {
+      response.setHeader('Content-Type', 'application/json');
+      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+    }
   );
 }
 
@@ -101,11 +158,14 @@ function compressPNG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
     else if (isLossy === 'false' && stripMeta === 'true') { const comImg = PNGsLossless; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') { const comImg = PNGLossy; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') { const comImg = PNGsLossy; successCallback(comImg); }
-    else { failureCallback('Wrong Form Data'); }
+    else { failureCallback(); }
   });
   comPromiseTwo.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function (error) { console.log(error); response.end(); }
+    function () {
+      response.setHeader('Content-Type', 'application/json');
+      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+    }
   );
 }
 
@@ -123,11 +183,14 @@ function compressGIF(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
     else if (isLossy === 'false' && stripMeta === 'true') { const comImg = GIFsLossless; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') { const comImg = GIFLossy; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') { const comImg = GIFsLossy; successCallback(comImg); }
-    else { failureCallback('Wrong Form Data'); }
+    else { failureCallback(); }
   });
   comPromiseThree.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function (error) { console.log(error); response.end(); }
+    function () {
+      response.setHeader('Content-Type', 'application/json');
+      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+    }
   );
 }
 
@@ -140,16 +203,19 @@ function compressSVG(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt
   const SVGLossy = spawn('scour', ['-i', inImgPath, '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
   const SVGsLossy = spawn('scour', ['-i', inImgPath, '--remove-descriptive-elements', '--enable-comment-stripping', '--no-line-breaks', '--enable-viewboxing', '-o', outImgPath]);
 
-  let comPromiseFour = new Promise(function (successCallback, failureCallback) {
+  let comPromiseFour = new Promise(function (successCallback) {
     if (isLossy === 'false' && stripMeta === 'false') { const comImg = SVGLossless; successCallback(comImg); }
     else if (isLossy === 'false' && stripMeta === 'true') { const comImg = SVGsLossless; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'false') { const comImg = SVGLossy; successCallback(comImg); }
     else if (isLossy === 'true' && stripMeta === 'true') { const comImg = SVGsLossy; successCallback(comImg); }
-    else { failureCallback('Wrong Form Data'); }
+    else { failureCallback(); }
   });
   comPromiseFour.then(
     function (comImg) { comImg.stdout.on('end', () => { sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgExt, inImgURL, outImgURL); }); },
-    function (error) { console.log(error); response.end(); }
+    function () {
+      response.setHeader('Content-Type', 'application/json');
+      response.end(JSON.stringify({ Error : 'Something Went Wrong' }));
+    }
   );
 }
 
@@ -158,9 +224,9 @@ function sendResponse(isLossy, stripMeta, inImgPath, outImgPath, response, imgEx
   let sizeBefore = Math.round(getFilesize(inImgPath))
   let sizeAfter = Math.round(getFilesize(outImgPath));
   let spaceSaved = sizeBefore - sizeAfter;
-  let percentOptimised = Math.round((spaceSaved/sizeBefore) * 10000)/100;
+  let percentOptimised = Math.round((spaceSaved / sizeBefore) * 10000) / 100;
   response.setHeader('Content-Type', 'application/json');
-  response.end(JSON.stringify({ 
+  response.end(JSON.stringify({
     imageType: imgExt,
     isLossy: isLossy,
     stripMeta: stripMeta,
