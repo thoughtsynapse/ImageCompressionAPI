@@ -157,10 +157,9 @@ sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
 ```
 
-#### Create app.js in /var/www/sixsilicon.com/
+#### Copy Repository files to /var/www/sixsilicon.com/api then...
 ```
 cd /var/www/sixsilicon.com/api
-nano app.js (https://raw.githubusercontent.com/twoabd/Compressor/main/api/app.js)
 npm init -y
 ```
 
