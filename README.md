@@ -178,7 +178,7 @@ npm install --save validator
 npm install --save formidable
 npm install --save uuid
 npm install --save find-remove
-npm install --save pm2 -g
+npm install --save-dev pm2
 pm2 startup
 ```
 
