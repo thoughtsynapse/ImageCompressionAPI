@@ -173,12 +173,12 @@ sudo chmod -R 755 /var/www/sixsilicon.com
 
 #### Install Formidable, UUID, find-remove and PM2
 ```
-npm install express --save
-npm install validator
-npm install formidable
-npm install uuid
-npm install -S find-remove
-npm install pm2 -g
+npm install --save express
+npm install --save validator
+npm install --save formidable
+npm install --save uuid
+npm install --save find-remove
+npm install --save pm2 -g
 pm2 startup
 ```
 
