@@ -147,6 +147,7 @@ server {
 }
 sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
 sudo unlink /etc/nginx/sites-enabled/default
+sudo systemctl restart nginx
 ```
 
 #### Installing SSL
@@ -155,35 +156,18 @@ sudo apt install certbot python3-certbot-nginx -y
 sudo certbot --nginx -d sixsilicon.com
 sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
+sudo systemctl restart nginx
 ```
 
-#### Copy Repository files to /var/www/sixsilicon.com/api then...
+#### Copy Repo Files to /var/www/sixsilicon.com/api & Install Dependencies
 ```
 cd /var/www/sixsilicon.com/api
-npm init -y
-```
-
-#### Giving Necessary Permission Again
-
-```
-sudo chown -R www-data:www-data /var/www/sixsilicon.com
-sudo chmod -R 755 /var/www/sixsilicon.com
-```
-
-#### Install Formidable, UUID, find-remove and PM2
-```
-npm install --save express
-npm install --save validator
-npm install --save formidable
-npm install --save uuid
-npm install --save find-remove
-npm install --save-dev pm2
+npm install
 pm2 startup
 ```
 
 #### Run Api Server
 ```
-sudo systemctl restart nginx
 cd /var/www/sixsilicon/api
-pm2 start app.js -i max
+pm2 start pm2.json -i max
 ```
