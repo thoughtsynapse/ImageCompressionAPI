@@ -159,15 +159,15 @@ sudo certbot renew --dry-run
 sudo systemctl restart nginx
 ```
 
-#### Copy Repo Files to /var/www/sixsilicon.com/api & Install Dependencies
+#### Copy Repo Files to /var/www/sixsilicon.com & Install Dependencies
 ```
-cd /var/www/sixsilicon.com/api
+cd /var/www/sixsilicon.com
 npm install
 pm2 startup
 ```
 
 #### Run Api Server
 ```
-cd /var/www/sixsilicon/api
+cd /var/www/sixsilicon
 pm2 start pm2.json -i max
 ```
