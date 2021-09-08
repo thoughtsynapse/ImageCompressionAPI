@@ -107,25 +107,25 @@ http {
 #### Creating API Directory with Necessary Permission
 
 ```
-sudo mkdir -p /var/www/sixsilicon.com/api
-sudo mkdir -p /var/www/sixsilicon.com/api/input
-sudo mkdir -p /var/www/sixsilicon.com/api/output
-sudo chown -R www-data:www-data /var/www/sixsilicon.com
-sudo chmod -R 755 /var/www/sixsilicon.com
+sudo mkdir -p /var/www/api.sixsilicon.com
+sudo mkdir -p /var/www/api.sixsilicon.com/input
+sudo mkdir -p /var/www/api.sixsilicon.com/output
+sudo chown -R www-data:www-data /var/www/api.sixsilicon.com
+sudo chmod -R 755 /var/www/api.sixsilicon.com
 ```
 
 #### Creating Virtual Host
 ```
-sudo nano /etc/nginx/sites-available/sixsilicon.com
+sudo nano /etc/nginx/sites-available/api.sixsilicon.com
 server {
     listen 80;
-    server_name sixsilicon.com;
+    server_name api.sixsilicon.com;
 
     #  Web Root
-    root /var/www/sixsilicon.com/api;
+    root /var/www/api.sixsilicon.com;
    
     # API Folder
-    location ^~ /api {
+    location ^~ /compress {
 	    proxy_pass http://localhost:3000;
 	    proxy_http_version 1.1;
 	    proxy_set_header Upgrade $http_upgrade;
@@ -145,7 +145,7 @@ server {
         try_files $uri $uri/ =404;
     }
 }
-sudo ln -s /etc/nginx/sites-available/sixsilicon.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/api.sixsilicon.com /etc/nginx/sites-enabled/
 sudo unlink /etc/nginx/sites-enabled/default
 sudo systemctl restart nginx
 ```
@@ -153,15 +153,15 @@ sudo systemctl restart nginx
 #### Installing SSL
 ```
 sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d sixsilicon.com
+sudo certbot --nginx -d api.sixsilicon.com
 sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
 sudo systemctl restart nginx
 ```
 
-#### Copy Repo Files to /var/www/sixsilicon.com & Install Dependencies
+#### Copy Repo Files to /var/www/api.sixsilicon.com & Install Dependencies
 ```
-cd /var/www/sixsilicon.com
+cd /var/www/api.sixsilicon.com
 npm install
 npm install pm2 -g
 pm2 startup
@@ -169,6 +169,6 @@ pm2 startup
 
 #### Run Api Server
 ```
-cd /var/www/sixsilicon
-pm2 start pm2.json -i max
+cd /var/www/api.sixsilicon.com
+pm2 start prod.json -i max
 ```
