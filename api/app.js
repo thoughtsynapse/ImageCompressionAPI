@@ -13,8 +13,8 @@ const findRemoveSync = require('find-remove');
 // Variables
 const inFolder = '/var/www/sixsilicon.com/api/input/';
 const outFolder = '/var/www/sixsilicon.com/api/output/';
-const baseInputURL = 'https://sixsilicon.com/in/';
-const baseOutputURL = 'https://sixsilicon.com/out/';
+const baseInputURL = 'https://sixsilicon.com/input/';
+const baseOutputURL = 'https://sixsilicon.com/output/';
 
 // Deleting images older than one hour from in and out folder
 setInterval(() => {
