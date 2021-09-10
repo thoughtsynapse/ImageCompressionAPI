@@ -11,23 +11,30 @@ Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and
 #### POST Request, No GET
 ```
 It receives all parameters in a POST request.     
-You can choose one image at a time with ```inImg=IMAGEFILE```
+You can choose one image at a time.
+Send image with 'inImg' key through POST request.
 ```
 
 #### Compression Type
-:exclamation: By Default image compression type is lossy.   
-:exclamation: You can choose lossless compression with ```isLossy=false```     
+```
+By Default image compression type is lossy.   
+You can choose lossless compression with 'isLossy' key and value 'false' through POST request.
+```
 
 #### Compression Quality
-:exclamation: Default JPG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```         
-:exclamation: Default PNG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```     
-:exclamation: Default SVG Image Compression Quality = 85, you can choose between 1-100 with ```imgQuality=YOURVALUE```    
-:exclamation: Default GIF Image Compression Quality = 5, you can choose between 1-10 with ```imgQuality=YOURVALUE```    
-:exclamation: For GIF, do not choose any value lower than 5, quality loss will be significant.   
+```
+Default JPG Image Compression Quality = 85, you can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.      
+Default PNG Image Compression Quality = 85, you can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.  
+Default SVG Image Compression Quality = 85, you can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.
+Default GIF Image Compression Quality = 5, you can choose between 1-10 with 'imgQuality' key and value 'YOURVALUE' through POST request.
+For GIF, do not choose any value lower than 5, quality loss will be significant.
+```
 
 #### Strip Meta
-:exclamation: By Default image metadata will be stripped.   
-:exclamation: You can choose not to strip meta with ```stripMeta=false```      
+```
+By Default image metadata will be stripped.   
+You can choose not to strip meta with stripMeta
+```
 
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy.png?raw=true)  
  
