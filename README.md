@@ -1,5 +1,6 @@
 ## Image Compression API
 
+<<<<<<< Updated upstream
 ```
 Image Compressor API compresses JPG, PNG, GIF & SVG images.        
 Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 is explained below.   
@@ -7,6 +8,12 @@ Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet.
 Also point your domain's A Reocrd to the Droplet's IP.    
 ```
 
+=======
+:exclamation: Image Compressor API compresses JPG, PNG, GIF & SVG images.        
+:exclamation: Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
+:exclamation: Before proceeding to that, create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's (here api.example.com) A Reocrd to the Droplet's IP.    
+   
+>>>>>>> Stashed changes
 ## How to use   
 
 #### POST Request, No GET
@@ -121,22 +128,22 @@ http {
 #### Creating API Directory with Necessary Permission
 
 ```
-sudo mkdir -p /var/www/api.sixsilicon.com
-sudo mkdir -p /var/www/api.sixsilicon.com/input
-sudo mkdir -p /var/www/api.sixsilicon.com/output
-sudo chown -R www-data:www-data /var/www/api.sixsilicon.com
-sudo chmod -R 755 /var/www/api.sixsilicon.com
+sudo mkdir -p /var/www/api.example.com
+sudo mkdir -p /var/www/api.example.com/input
+sudo mkdir -p /var/www/api.example.com/output
+sudo chown -R www-data:www-data /var/www/api.example.com
+sudo chmod -R 755 /var/www/api.example.com
 ```
 
 #### Creating Virtual Host
 ```
-sudo nano /etc/nginx/sites-available/api.sixsilicon.com
+sudo nano /etc/nginx/sites-available/api.example.com
 server {
     listen 80;
-    server_name api.sixsilicon.com;
+    server_name api.example.com;
 
     #  Web Root
-    root /var/www/api.sixsilicon.com;
+    root /var/www/api.example.com;
    
     # API Folder
     location ^~ /compress {
@@ -159,7 +166,7 @@ server {
         try_files $uri $uri/ =404;
     }
 }
-sudo ln -s /etc/nginx/sites-available/api.sixsilicon.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/api.example.com /etc/nginx/sites-enabled/
 sudo unlink /etc/nginx/sites-enabled/default
 sudo systemctl restart nginx
 ```
@@ -167,15 +174,15 @@ sudo systemctl restart nginx
 #### Installing SSL
 ```
 sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d api.sixsilicon.com
+sudo certbot --nginx -d api.example.com
 sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
 sudo systemctl restart nginx
 ```
 
-#### Copy Repo Files to /var/www/api.sixsilicon.com & Install Dependencies
+#### Copy Repo Files to /var/www/api.example.com & Install Dependencies
 ```
-cd /var/www/api.sixsilicon.com
+cd /var/www/api.example.com
 npm install
 npm install pm2 -g
 pm2 startup
@@ -183,6 +190,6 @@ pm2 startup
 
 #### Run Api Server
 ```
-cd /var/www/api.sixsilicon.com
+cd /var/www/api.example.com
 pm2 start prod.json -i max
 ```
