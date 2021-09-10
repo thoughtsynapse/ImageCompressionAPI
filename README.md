@@ -24,6 +24,7 @@ You can choose lossless compression with 'isLossy' key and value 'false' through
 
 #### Compression Quality
 ```
+Compression Quality (imgQuality) won't work if isLossy is set to false.
 Default JPG, PNG, SVG Image Compression Quality = 85.  
 You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request. 
 
