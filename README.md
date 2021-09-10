@@ -1,16 +1,18 @@
 ## Image Compression API
 
 ```
-:exclamation: Image Compressor API compresses JPG, PNG, GIF & SVG images.        
-:exclamation: Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
-:exclamation: Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.    
+Image Compressor API compresses JPG, PNG, GIF & SVG images.        
+Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
+Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.    
 ```
 
 ## How to use   
 
 #### POST Request, No GET
-:exclamation: It receives all parameters in a POST request.     
-:exclamation: You can choose one image at a time with ```inImg=IMAGEFILE```      
+```
+It receives all parameters in a POST request.     
+You can choose one image at a time with ```inImg=IMAGEFILE```
+```
 
 #### Compression Type
 :exclamation: By Default image compression type is lossy.   
