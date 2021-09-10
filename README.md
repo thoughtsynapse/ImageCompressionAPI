@@ -3,7 +3,8 @@
 ```
 Image Compressor API compresses JPG, PNG, GIF & SVG images.        
 Documentation for installing Compressor API on DigitalOcean Ubuntu 20.04 Droplet is explained below.   
-Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet and point your domain's A Reocrd to the Droplet's IP.    
+Before proceeding to that, please create a DigitalOcean Ubuntu 20.04 Droplet.   
+Also point your domain's A Reocrd to the Droplet's IP.    
 ```
 
 ## How to use   
