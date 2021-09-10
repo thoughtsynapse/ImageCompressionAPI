@@ -24,25 +24,18 @@ You can choose lossless compression with 'isLossy' key and value 'false' through
 
 #### Compression Quality
 ```
-Default JPG Image Compression Quality = 85.  
+Default JPG, PNG, SVG Image Compression Quality = 85.  
 You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request. 
-
-Default PNG Image Compression Quality = 85.   
-You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.  
-
-Default SVG Image Compression Quality = 85.   
-You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.
 
 Default GIF Image Compression Quality = 5.   
 You can choose between 1-10 with 'imgQuality' key and value 'YOURVALUE' through POST request.
-
 For GIF, do not choose any value lower than 5, quality loss will be significant.
 ```
 
 #### Strip Meta
 ```
 By Default image metadata will be stripped.   
-You can choose not to strip meta with stripMeta
+You can choose not to strip meta with 'stripMeta' key and value 'false' through POST request.
 ```
 
 ![alt text](https://github.com/twoabd/Image-Compression-API/blob/main/docs/lossy.png?raw=true)  
