@@ -11,7 +11,7 @@ Also point your domain's A Reocrd to the Droplet's IP.
 
 #### POST Request, No GET
 ```
-It receives all parameters in a POST request.     
+It receives all parameters in a POST request at https://api.sixsilicon.com/compress.     
 You can choose one image at a time.
 Send image with 'inImg' key through POST request.
 ```
