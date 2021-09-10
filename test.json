@@ -1,9 +1,0 @@
-{
-    "apps": [
-        {
-            "name": "imagecompressionapi",
-            "script": "npm",
-            "args" : "test"
-        }
-    ]
-}
