@@ -24,10 +24,18 @@ You can choose lossless compression with 'isLossy' key and value 'false' through
 
 #### Compression Quality
 ```
-Default JPG Image Compression Quality = 85, you can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.      
-Default PNG Image Compression Quality = 85, you can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.  
-Default SVG Image Compression Quality = 85, you can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.
-Default GIF Image Compression Quality = 5, you can choose between 1-10 with 'imgQuality' key and value 'YOURVALUE' through POST request.
+Default JPG Image Compression Quality = 85.  
+You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request. 
+
+Default PNG Image Compression Quality = 85.   
+You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.  
+
+Default SVG Image Compression Quality = 85.   
+You can choose between 1-100 with 'imgQuality' key and value 'YOURVALUE' through POST request.
+
+Default GIF Image Compression Quality = 5.   
+You can choose between 1-10 with 'imgQuality' key and value 'YOURVALUE' through POST request.
+
 For GIF, do not choose any value lower than 5, quality loss will be significant.
 ```
 
