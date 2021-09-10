@@ -11,10 +11,10 @@ const uuid = require('uuid');
 const findRemoveSync = require('find-remove');
 
 // Variables
-const inFolder = '/var/www/sixsilicon.com/api/input/';
-const outFolder = '/var/www/sixsilicon.com/api/output/';
-const baseInputURL = 'https://sixsilicon.com/input/';
-const baseOutputURL = 'https://sixsilicon.com/output/';
+const inFolder = '/var/www/api.sixsilicon.com/input/';
+const outFolder = '/var/www/api.sixsilicon.com/output/';
+const baseInputURL = 'https://api.sixsilicon.com/input/';
+const baseOutputURL = 'https://api.sixsilicon.com/output/';
 
 // Deleting images older than one hour from in and out folder
 setInterval(() => {
@@ -23,7 +23,7 @@ setInterval(() => {
 }, 3600000);
 
 // Creating Server
-app.post('/api', (req, res) => {
+app.post('/compress', (req, res) => {
   let form = new formidable.IncomingForm();
   form.parse(req, function (err, fields, files) {
 
